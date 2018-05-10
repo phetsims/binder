@@ -18,9 +18,6 @@
     return fs.readFileSync( '../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
   };
 
-  // Command to echo through the sim, so that we know it launched.
-  const echo = 'phet.binder.sim.loaded';
-
   const myArgs = process.argv.slice( 2 );
   const outputFile = myArgs[ 0 ];
   const commandLineSims = myArgs[ 1 ]; // Allow comma-separated list of sims
@@ -35,57 +32,67 @@
     let data = {};
 
     let sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
-    console.log( sims.join( ', ' ) );
+    console.log( 'sims to load:', sims.join( ', ' ) );
 
-    async function loadSim( i ) {
+    for ( let sim of sims ) {
 
-      const sim = sims[ i ];
       const page = await browser.newPage();
 
       // log to our server from the browser
-      page.on( 'console', async function( msg ) {
-
-        if ( msg.text() === echo ) {
-          const result = await page.evaluate( () => {
-            if ( phet.phetCore.InstanceRegistry ) {
-              return phet.phetCore.InstanceRegistry.map; // TODO: should this be Promise.resolve(...)?
-            }
-            else {
-              console.log( 'map not found for sim: ' + sim );
-              return {};
-            }
-          } );
-          data[ sim ] = result;
-
-          await page.close();
-          if ( i + 1 < sims.length ) {
-
-            const report = createReportFromData( data );
-            fs.writeFileSync( outputFile, report );
-            console.log( 'wrote report to: ' + outputFile );
-
-            await loadSim( i + 1 );
-          }
-          else {
-            browser.close();
-            const reportString = createReportFromData( data );
-            fs.writeFileSync( 'binderjson.json', JSON.stringify( data, null, 2 ) );
-            fs.writeFileSync( outputFile, reportString );
-            console.log( 'wrote report to: ' + outputFile );
-          }
+      page.on( 'console', msg => {
+        if ( msg.type() === 'error' ) {
+          console.error( `${sim} PAGE ERROR:`, msg.text() );
         }
-        else {
-          console.log( 'PAGE LOG:', msg.text() );
+        else{
+          console.log( `${sim} PAGE LOG:`, msg.text() );
         }
       } );
 
       // navigate to the sim page
-      const url = `http://localhost/${sim}/${sim}_en.html?brand=phet&ea&consoleLogOnLoad=${echo}&binder`;
-      console.log( 'loading: ' + sim );
+      const url = `http://localhost/${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
+      console.log( '\nloading: ' + sim );
       await page.goto( url );
+
+      // Add a listener such that when the sim posts a message saying that it has loaded,
+      // get the InstanceRegistry's mapping of components for this sim
+      data[ sim ] = await page.evaluate( ( sim ) => {
+        return new Promise( function( resolve, reject ) {
+          window.addEventListener( 'message', function( event ) {
+            if ( event.data ) {
+              try {
+                let messageData = JSON.parse( event.data );
+                if ( messageData.type === 'load' ) {
+                  console.log( 'loaded', sim );
+
+                  if ( phet.phetCore.InstanceRegistry ) {
+                    resolve( phet.phetCore.InstanceRegistry.map );
+                  }
+                  else {
+                    console.error( 'InstanceRegistry not defined. This normally means no components are in this sim.' );
+                    resolve( {});
+                  }
+                }
+              }
+              catch( e ) {
+                // message isn't what we wanted it to be, so ignore it
+              }
+            }
+            else {
+              console.log( 'no data on message event' );
+            }
+          } );
+        } );
+      }, sim );
+      await page.close();
+      const report = createReportFromData( data );
+      fs.writeFileSync( outputFile, report );
+      console.log( `wrote report to: '${outputFile}' after sim: ${sim}`);
     }
 
-    // start loading the first sim.
-    await loadSim( 0 );
+    browser.close();
+    const reportString = createReportFromData( data );
+    fs.writeFileSync( 'binderjson.json', JSON.stringify( data, null, 2 ) );
+    fs.writeFileSync( outputFile, reportString );
+    console.log( 'wrote final report to: ' + outputFile );
   } )();
 } )();

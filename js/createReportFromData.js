@@ -54,7 +54,7 @@
         markdown = marked( m.toString() );
       }
       catch( e ) {
-        markdown = '# TODO: *documentation*';
+        markdown = marked( '# TODO: *documentation*' );
       }
 
       // TODO: encode the repo in the key name at registration time
