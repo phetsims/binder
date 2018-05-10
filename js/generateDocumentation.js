@@ -5,10 +5,8 @@ const fs = require( 'fs' );
 
 // Helper function to get the sim list from perennial
 const getSims = function() {
-  const simsFileText = fs.readFileSync( '../perennial/data/active-sims' ).toString();
-  const sims = simsFileText.replace( new RegExp( '\r', 'g' ), '' ).split( '\n' );
-  sims.splice( sims.indexOf( '' ) );
-  return sims;
+  const simsFileText = fs.readFileSync( '../../perennial/data/active-sims' ).toString().trim();
+  return simsFileText.replace( new RegExp( '\r', 'g' ), '' ).split( '\n' );
 };
 
 ( async () => {
@@ -33,7 +31,7 @@ const getSims = function() {
     await page.goto( `http://localhost/${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad` );
 
     // This will not return until the first message has been sent
-    // TODO in our sims, the first message is the loaded one, but we should parse the JSON and make sure that it is the laoded event.
+    // TODO in our sims, the first message is the loaded one, but we should parse the JSON and make sure that it is the loaded event.
     data[ sim ] = await page.evaluate( () => {
       return new Promise( function( resolve, reject ) {
         window.addEventListener( 'message', function() {
