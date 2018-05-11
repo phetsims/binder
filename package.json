@@ -1,0 +1,22 @@
+{
+  "name": "binder",
+  "version": "1.0.0-dev.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phetsims/binder.git"
+  },
+  "devDependencies": {
+    "marked": "0.3.19",
+    "puppeteer": "1.4.0"
+  },
+  "phet": {
+    "requirejsNamespace": "ACID_BASE_SOLUTIONS",
+    "runnable": true,
+    "supportedBrands": [
+      "phet",
+      "adapted-from-phet"
+    ],
+    "simulation": true
+  }
+}
