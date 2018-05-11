@@ -48,7 +48,7 @@
       } );
       const numberOfSimsThatUseTheComponent = simsThatUseTheComponent.length;
 
-      var markdown = '';
+      let markdown = '';
       try {
         const m = fs.readFileSync( '../../sun/js/' + componentType + '.md' );
         markdown = marked( m.toString() );

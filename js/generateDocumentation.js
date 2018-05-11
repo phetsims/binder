@@ -9,9 +9,13 @@
 ( function() {
   'use strict';
 
+  // modules
   const puppeteer = require( 'puppeteer' ); // eslint-ignore-line
   const fs = require( 'fs' );
   const createReportFromData = require( './createReportFromData' );
+
+  // constants
+  const OUTPUT_FILE = '../docs/index.html';
 
   // Helper function to get the sim list from perennial
   const getSims = function() {
@@ -19,12 +23,12 @@
   };
 
   const myArgs = process.argv.slice( 2 );
-  const outputFile = myArgs[ 0 ];
-  const commandLineSims = myArgs[ 1 ]; // Allow comma-separated list of sims
-  if ( !outputFile ) {
+
+  const commandLineSims = myArgs[ 0 ]; // Allow comma-separated list of sims
+  if ( !OUTPUT_FILE ) {
     throw new Error( 'Usage: specify outputFile' );
   }
-  console.log( 'streaming to ' + outputFile );
+  console.log( 'streaming to ' + OUTPUT_FILE );
 
   ( async () => {
     const browser = await puppeteer.launch();
@@ -43,7 +47,7 @@
         if ( msg.type() === 'error' ) {
           console.error( `${sim} PAGE ERROR:`, msg.text() );
         }
-        else{
+        else {
           console.log( `${sim} PAGE LOG:`, msg.text() );
         }
       } );
@@ -69,7 +73,7 @@
                   }
                   else {
                     console.error( 'InstanceRegistry not defined. This normally means no components are in this sim.' );
-                    resolve( {});
+                    resolve( {} );
                   }
                 }
               }
@@ -85,14 +89,14 @@
       }, sim );
       await page.close();
       const report = createReportFromData( data );
-      fs.writeFileSync( outputFile, report );
-      console.log( `wrote report to: '${outputFile}' after sim: ${sim}`);
+      fs.writeFileSync( OUTPUT_FILE, report );
+      console.log( `wrote report to: ${OUTPUT_FILE}` );
     }
 
     browser.close();
     const reportString = createReportFromData( data );
     fs.writeFileSync( 'binderjson.json', JSON.stringify( data, null, 2 ) );
-    fs.writeFileSync( outputFile, reportString );
-    console.log( 'wrote final report to: ' + outputFile );
+    fs.writeFileSync( OUTPUT_FILE, reportString );
+    console.log( `wrote final report to:  ${OUTPUT_FILE}` );
   } )();
 } )();
