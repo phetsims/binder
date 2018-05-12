@@ -41,31 +41,38 @@
 </style>
 </head>
 <body>`;
-    componentTypesArray.forEach( function( componentType ) {
+    componentTypesArray.forEach( function( repoAndComponent ) {
+
+      let repo = repoAndComponent.split( '/' )[ 0 ];
+      let component = repoAndComponent.split( '/' )[ 1 ];
 
       const simsThatUseTheComponent = sims.filter( sim => {
-        return data[ sim ][ componentType ];
+        return data[ sim ][ repoAndComponent ];
       } );
       const numberOfSimsThatUseTheComponent = simsThatUseTheComponent.length;
 
       let markdown = '';
       try {
-        const m = fs.readFileSync( '../../sun/js/' + componentType + '.md' );
+        const m = fs.readFileSync( `../../${repo}/docs/${component}.md` );
         markdown = marked( m.toString() );
+
+        // Use subdirectory for images, so that different directories can have images of the same name
+        // TODO: This may yield false positives, say if code examples have this same term.
+        markdown = markdown.split( '<img src="images/' ).join( '<img src="images/' + repo + '/' );
       }
       catch( e ) {
         markdown = marked( '# TODO: *documentation*' );
       }
 
-      // TODO: encode the repo in the key name at registration time
-      header = header + `<h1>${componentType}</h1>
+      // TODO: support subdirectories for the component.
+      header = header + `<h1>${repoAndComponent}</h1>
 <ul>
-<li><a href="https://github.com/phetsims/sun/blob/master/js/${componentType}.js">Source Code and Options</a></li>
+<li><a href="https://github.com/phetsims/${repo}/blob/master/js/${component}.js">Source Code and Options</a></li>
 <li>Number of published sims with component:</li>
 <li>Number of development sims with component: ${numberOfSimsThatUseTheComponent}</li>
 </ul>` + markdown;
       const simReports = sims.map( sim => {
-        const components = data[ sim ][ componentType ];
+        const components = data[ sim ][ repoAndComponent ];
         if ( components ) {
           return '<section>' + sim + ':' + ( components.map( c => {
             return '<image src=' + c + '></image>';

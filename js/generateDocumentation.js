@@ -12,6 +12,7 @@
   // modules
   const puppeteer = require( 'puppeteer' ); // eslint-ignore-line
   const fs = require( 'fs' );
+  const fsExtra = require( 'fs-extra' );
   const createReportFromData = require( './createReportFromData' );
 
   // constants
@@ -90,6 +91,18 @@
       await page.close();
       const report = createReportFromData( data );
       fs.writeFileSync( OUTPUT_FILE, report );
+
+      // Copy image files
+      try {
+
+        // TODO: this assumes we only need image from two repos
+        fsExtra.copySync( '../../sun/docs/images', '../docs/images/sun' );
+        fsExtra.copySync( '../../scenery-phet/docs/images', '../docs/images/scenery-phet' );
+      }
+      catch( err ) {
+        console.error( err );
+      }
+
       console.log( `wrote report to: ${OUTPUT_FILE}` );
     }
 
