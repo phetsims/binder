@@ -10,9 +10,9 @@
   'use strict';
 
   // modules
-  const puppeteer = require( 'puppeteer' ); // eslint-ignore-line
+  const puppeteer = require( 'puppeteer' );
   const fs = require( 'fs' );
-  const fsExtra = require( 'fs-extra' );
+  const fsExtra = require( 'fs-extra' ); // eslint-disable-line
   const createReportFromData = require( './createReportFromData' );
 
   // constants
