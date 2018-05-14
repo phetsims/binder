@@ -7,12 +7,10 @@
     "url": "https://github.com/phetsims/binder.git"
   },
   "devDependencies": {
-    "grunt": "~1.0.0",
     "marked": "0.3.19",
     "puppeteer": "1.4.0",
     "fs-extra": "6.0.1"
   },
   "phet": {
-    "requirejsNamespace": "BINDER"
   }
 }
