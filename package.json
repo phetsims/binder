@@ -10,7 +10,5 @@
     "marked": "0.3.19",
     "puppeteer": "1.4.0",
     "fs-extra": "6.0.1"
-  },
-  "phet": {
   }
 }
