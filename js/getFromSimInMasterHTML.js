@@ -12,10 +12,12 @@ const fs = require( 'fs' );
 const marked = require( 'marked' );
 
 /**
- * @param {Object} data sims=>components=>dataURLs
+ * The data object has levels like sims=>components=>dataURLs
+ * So each simKey is another object
+ * @param {Object} data
  * @returns {string}
  */
-const createReportFromData = function( data ) {
+const getFromSimInMasterHTML = function( data ) {
 
   const componentTypes = {};
   const sims = Object.keys( data );
@@ -93,12 +95,12 @@ const createReportFromData = function( data ) {
  * @param data sim => componentName => [dataURLs]
  * @returns {string}
  */
-module.exports = createReportFromData;
+module.exports = getFromSimInMasterHTML;
 
 // Shortcut to use stored JSON for quick iteration.
 const myArgs = process.argv.slice( 2 );
 if ( myArgs[ 0 ] && myArgs[ 0 ] === 'json' ) {
   const inputFile = myArgs[ 1 ];
-  const report = createReportFromData( JSON.parse( fs.readFileSync( inputFile ) ) );
+  const report = getFromSimInMasterHTML( JSON.parse( fs.readFileSync( inputFile ) ) );
   console.log( report );
 }

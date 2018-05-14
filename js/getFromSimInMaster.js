@@ -13,30 +13,19 @@
 // modules
 const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
-const fsExtra = require( 'fs-extra' ); // eslint-disable-line
-const createReportFromData = require( './createReportFromData' );
-
-// constants
-const OUTPUT_FILE = '../docs/index.html';
+const getFromSimInMasterHTML = require( './getFromSimInMasterHTML' );
 
 // Helper function to get the sim list from perennial
 const getSims = function() {
   return fs.readFileSync( '../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
 
-const myArgs = process.argv.slice( 2 );
-
-const commandLineSims = myArgs[ 0 ]; // Allow comma-separated list of sims
-if ( !OUTPUT_FILE ) {
-  throw new Error( 'Usage: specify outputFile' );
-}
-console.log( 'streaming to ' + OUTPUT_FILE );
-
-( async () => {
+module.exports = async ( commandLineSims ) => {
   const browser = await puppeteer.launch();
 
   let data = {};
 
+  // override to generate based on only sims provided
   let sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
   console.log( 'sims to load:', sims.join( ', ' ) );
 
@@ -87,29 +76,18 @@ console.log( 'streaming to ' + OUTPUT_FILE );
             console.log( 'no data on message event' );
           }
         } );
+        setTimeout( function() {
+          console.log( 'sim load timeout, moving on' );
+          resolve( {} );
+        }, 20000 );
       } );
     }, sim );
     await page.close();
-    const report = createReportFromData( data );
-    fs.writeFileSync( OUTPUT_FILE, report );
-
-    // Copy image files
-    try {
-
-      // TODO: this assumes we only need image from two repos
-      fsExtra.copySync( '../../sun/docs/images', '../docs/images/sun' );
-      fsExtra.copySync( '../../scenery-phet/docs/images', '../docs/images/scenery-phet' );
-    }
-    catch( err ) {
-      console.error( err );
-    }
-
-    console.log( `wrote report to: ${OUTPUT_FILE}` );
   }
 
   browser.close();
-  const reportString = createReportFromData( data );
+
   fs.writeFileSync( 'binderjson.json', JSON.stringify( data, null, 2 ) );
-  fs.writeFileSync( OUTPUT_FILE, reportString );
-  console.log( `wrote final report to:  ${OUTPUT_FILE}` );
-} )();
+  return getFromSimInMasterHTML( data );
+
+};
