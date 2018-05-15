@@ -13,7 +13,6 @@
 // modules
 const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
-const getFromSimInMasterHTML = require( './getFromSimInMasterHTML' );
 
 // Helper function to get the sim list from perennial
 const getSims = function() {
@@ -88,6 +87,6 @@ module.exports = async ( commandLineSims ) => {
   browser.close();
 
   fs.writeFileSync( 'binderjson.json', JSON.stringify( data, null, 2 ) );
-  return getFromSimInMasterHTML( data );
+  return data;
 
 };

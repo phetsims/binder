@@ -11,8 +11,9 @@
 'use strict';
 
 const fs = require( 'fs' );
-const fsExtra = require( 'fs-extra' );
+const fsExtra = require( 'fs-extra' ); // eslint-disable-line
 const getFromSimInMaster = require( './getFromSimInMaster' );
+const createHTML = require( './createHTML' );
 
 // constants
 const OUTPUT_FILE = '../docs/index.html';
@@ -39,8 +40,11 @@ catch( err ) {
 
 ( async () => {
 
-  const reportString = await getFromSimInMaster( commandLineSims );
-  fs.writeFileSync( OUTPUT_FILE, reportString );
-  console.log( `wrote final report to:  ${OUTPUT_FILE}` );
+  const componentDataBySim = await getFromSimInMaster( commandLineSims );
 
-})();
+  const HTML = createHTML( componentDataBySim );
+
+  fs.writeFileSync( 'binderjson.json', JSON.stringify( componentDataBySim, null, 2 ) );
+  fs.writeFileSync( OUTPUT_FILE, HTML );
+  console.log( `wrote final report to:  ${OUTPUT_FILE}` );
+} )();

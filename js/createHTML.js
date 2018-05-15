@@ -9,7 +9,7 @@
 'use strict';
 
 const fs = require( 'fs' );
-const marked = require( 'marked' );
+const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
 
 /**
  * The data object has levels like sims=>components=>dataURLs
@@ -17,7 +17,7 @@ const marked = require( 'marked' );
  * @param {Object} data
  * @returns {string}
  */
-const getFromSimInMasterHTML = function( data ) {
+const createHTML = function( data ) {
 
   const componentTypes = {};
   const sims = Object.keys( data );
@@ -28,9 +28,10 @@ const getFromSimInMasterHTML = function( data ) {
     } );
   } );
 
+
   const componentTypesArray = Object.keys( componentTypes );
 
-  let header = `<html><head>
+  let HTML = `<html><head>
 <style>
  body {
     background-color: #acd7ed;
@@ -54,26 +55,19 @@ const getFromSimInMasterHTML = function( data ) {
     } );
     const numberOfSimsThatUseTheComponent = simsThatUseTheComponent.length;
 
-    let markdown = '';
-    try {
-      const m = fs.readFileSync( `../../${repo}/docs/${component}.md` );
-      markdown = marked( m.toString() );
+    // get the markdown file
+    const markdownHTML = getMarkdownFileAsHTML( repo, component );
 
-      // Use subdirectory for images, so that different directories can have images of the same name
-      // TODO: This may yield false positives, say if code examples have this same term.
-      markdown = markdown.split( '<img src="images/' ).join( '<img src="images/' + repo + '/' );
-    }
-    catch( e ) {
-      markdown = marked( '# TODO: *documentation*' );
-    }
 
     // TODO: support subdirectories for the component.
-    header = header + `<h1>${repoAndComponent}</h1>
+    HTML = HTML + `<h1 id="${component.toLowerCase()}">${repoAndComponent}</h1>
 <ul>
 <li><a href="https://github.com/phetsims/${repo}/blob/master/js/${component}.js">Source Code and Options</a></li>
 <li>Number of published sims with component:</li>
 <li>Number of development sims with component: ${numberOfSimsThatUseTheComponent}</li>
-</ul>` + markdown;
+</ul>` + markdownHTML;
+
+    //
     const simReports = sims.map( sim => {
       const components = data[ sim ][ repoAndComponent ];
       if ( components ) {
@@ -82,25 +76,28 @@ const getFromSimInMasterHTML = function( data ) {
         } ).join( ' ' ) ) + '</section>';
       }
       else {
-        return '<section>' + sim + ':' + 'not used</section>';
+        // return '<section>' + sim + ':' + 'not used</section>';
+        return '';
       }
     } );
-    header = header + simReports.join( '\n' );
+    HTML = HTML + simReports.join( '\n' ) + '<hr/>';
   } );
-  header = header + '</body></html>';
+  HTML = HTML + '</body></html>';
 
-  return header;
+  return HTML;
 };
+
+
 /**
  * @param data sim => componentName => [dataURLs]
  * @returns {string}
  */
-module.exports = getFromSimInMasterHTML;
+module.exports = createHTML;
 
 // Shortcut to use stored JSON for quick iteration.
 const myArgs = process.argv.slice( 2 );
 if ( myArgs[ 0 ] && myArgs[ 0 ] === 'json' ) {
   const inputFile = myArgs[ 1 ];
-  const report = getFromSimInMasterHTML( JSON.parse( fs.readFileSync( inputFile ) ) );
+  const report = createHTML( JSON.parse( fs.readFileSync( inputFile ) ) );
   console.log( report );
 }
