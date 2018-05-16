@@ -6,6 +6,13 @@
  * Currently the data structure returned is an object where keys are the sims, and the value is an object where the
  * key is the component name i.e. `{{repoName}}/{{componentName}}, and the value is a list of dataURL images.
  *
+ *
+ * This file relies heavily on phet-core's `InstanceRegistry.js` to communicate with sims during runtime. To get data
+ * and pictures about a component in the sim, that component will need to be registered, see ComboBox.js as an example. . .
+ * Something like: `
+ * // support for binder documentation, stripped out in builds and only runs when ?binder is specified
+ * assert && phet.chipper.queryParameters.binder && InstanceRegistry.registerDataURL( 'sun', 'ComboBox', this );
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
