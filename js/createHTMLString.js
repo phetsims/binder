@@ -14,10 +14,10 @@ const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
 /**
  * The data object has levels like sims=>components=>dataURLs
  * So each simKey is another object
- * @param {Object} data
- * @returns {string}
+ * @param {Object} data - see `getFromSimInMaster` for more details.
+ * @returns {string} - the HTML
  */
-const createHTML = function( data ) {
+const createHTMLString = function( data ) {
 
   const componentTypes = {};
   const sims = Object.keys( data );
@@ -92,12 +92,13 @@ const createHTML = function( data ) {
  * @param data sim => componentName => [dataURLs]
  * @returns {string}
  */
-module.exports = createHTML;
+module.exports = createHTMLString;
 
-// Shortcut to use stored JSON for quick iteration.
+// Shortcut to use stored JSON for quick iteration. See getFromSimInMaster for writing of this data file.
 const myArgs = process.argv.slice( 2 );
 if ( myArgs[ 0 ] && myArgs[ 0 ] === 'json' ) {
   const inputFile = myArgs[ 1 ];
-  const report = createHTML( JSON.parse( fs.readFileSync( inputFile ) ) );
+  const report = createHTMLString( JSON.parse( fs.readFileSync( inputFile ) ) );
   console.log( report );
+
 }

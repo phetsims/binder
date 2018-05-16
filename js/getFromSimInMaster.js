@@ -1,7 +1,10 @@
 // Copyright 2018, University of Colorado Boulder
 
 /**
- * Runs all sims to get runtime information, then runs createReportFromData to generate HTML.
+ * Runs all sims to get runtime information. Return the data object based on the sims run in master.
+ *
+ * Currently the data structure returned is an object where keys are the sims, and the value is an object where the
+ * key is the component name i.e. `{{repoName}}/{{componentName}}, and the value is a list of dataURL images.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -63,7 +66,7 @@ module.exports = async ( commandLineSims ) => {
                 }
                 else {
                   console.error( 'InstanceRegistry not defined. This normally means no components are in this sim.' );
-                  resolve( {} );
+                  resolve( undefined );
                 }
               }
             }
@@ -77,7 +80,7 @@ module.exports = async ( commandLineSims ) => {
         } );
         setTimeout( function() {
           console.log( 'sim load timeout, moving on' );
-          resolve( {} );
+          resolve( undefined );
         }, 20000 );
       } );
     }, sim );
@@ -86,7 +89,11 @@ module.exports = async ( commandLineSims ) => {
 
   browser.close();
 
+  // TODO: is this the best place for this?
+  // write data to a file so that we don't have to run this so often for quick iteration.
   fs.writeFileSync( 'binderjson.json', JSON.stringify( data, null, 2 ) );
+
+  // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level.
   return data;
 
 };

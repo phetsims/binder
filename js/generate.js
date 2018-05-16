@@ -1,9 +1,8 @@
 // Copyright 2018, University of Colorado Boulder
 
 /**
- * Runs all sims to get runtime information, then runs createReportFromData to generate HTML.
+ * Main launch point for the documentation generation
  *
- * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
@@ -13,7 +12,7 @@
 const fs = require( 'fs' );
 const fsExtra = require( 'fs-extra' ); // eslint-disable-line
 const getFromSimInMaster = require( './getFromSimInMaster' );
-const createHTML = require( './createHTML' );
+const createHTMLString = require( './createHTMLString' );
 
 // constants
 const OUTPUT_FILE = '../docs/index.html';
@@ -21,9 +20,7 @@ const OUTPUT_FILE = '../docs/index.html';
 const myArgs = process.argv.slice( 2 );
 
 const commandLineSims = myArgs[ 0 ]; // Allow comma-separated list of sims
-if ( !OUTPUT_FILE ) {
-  throw new Error( 'Usage: specify outputFile' );
-}
+
 console.log( 'streaming to ' + OUTPUT_FILE );
 
 // Copy image files
@@ -40,9 +37,10 @@ catch( err ) {
 
 ( async () => {
 
+  // Run all sims, get a list of pictures for a sim for a component.
   const componentDataBySim = await getFromSimInMaster( commandLineSims );
 
-  const HTML = createHTML( componentDataBySim );
+  const HTML = createHTMLString( componentDataBySim );
 
   fs.writeFileSync( 'binderjson.json', JSON.stringify( componentDataBySim, null, 2 ) );
   fs.writeFileSync( OUTPUT_FILE, HTML );

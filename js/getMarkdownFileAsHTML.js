@@ -1,7 +1,7 @@
 // Copyright 2018, University of Colorado Boulder
 
 /**
- * Get the hand written markdown file for a component.
+ * Get the hand written markdown file for a component. Return the converted HTML from the markdown converted by "marked"
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
@@ -16,6 +16,7 @@ const marked = require( 'marked' );
  * This markdown file is converted to HTML with the 'marked' module.
  * @param {string} repo
  * @param {string} component
+ * @returns {string} - HTML
  */
 module.exports = function( repo, component ) {
 
