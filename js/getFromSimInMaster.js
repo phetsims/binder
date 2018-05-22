@@ -42,6 +42,17 @@ module.exports = async ( commandLineSims ) => {
 
     const page = await browser.newPage();
 
+    await page.exposeFunction( 'updateComponentData', (simName, dataMap) => {
+      for (let component in dataMap ) {
+  
+        if ( !data[ component ] ) {
+          data[ component ] = {};
+        }
+
+        data[ component ][ simName ] = dataMap[ component ];
+      }
+    } );
+
     // log to our server from the browser
     page.on( 'console', msg => {
       if ( msg.type() === 'error' ) {
@@ -53,13 +64,13 @@ module.exports = async ( commandLineSims ) => {
     } );
 
     // navigate to the sim page
-    const url = `http://localhost/${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
+    const url = `http://localhost:8080/${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
     console.log( '\nloading: ' + sim );
     await page.goto( url );
 
     // Add a listener such that when the sim posts a message saying that it has loaded,
     // get the InstanceRegistry's mapping of components for this sim
-    data[ sim ] = await page.evaluate( ( sim ) => {
+    await page.evaluate( ( sim ) => {
       return new Promise( function( resolve, reject ) {
         window.addEventListener( 'message', function( event ) {
           if ( event.data ) {
@@ -69,7 +80,8 @@ module.exports = async ( commandLineSims ) => {
                 console.log( 'loaded', sim );
 
                 if ( phet.phetCore.InstanceRegistry ) {
-                  resolve( phet.phetCore.InstanceRegistry.map );
+                  window.updateComponentData( sim, phet.phetCore.InstanceRegistry.map );
+                  resolve();
                 }
                 else {
                   console.error( 'InstanceRegistry not defined. This normally means no components are in this sim.' );
@@ -79,6 +91,7 @@ module.exports = async ( commandLineSims ) => {
             }
             catch( e ) {
               // message isn't what we wanted it to be, so ignore it
+              console.log( 'CAUGHT ERROR:', e.message );
             }
           }
           else {

@@ -28,7 +28,7 @@ try {
 
   // TODO: this assumes we only need image from two repos
   fsExtra.copySync( '../../sun/docs/images', '../docs/images/sun' );
-  fsExtra.copySync( '../../scenery-phet/docs/images', '../docs/images/scenery-phet' );
+  fsExtra.copySync( '../../scenery-phet/images', '../docs/images/scenery-phet' );
 }
 catch( err ) {
   console.error( err );
@@ -42,7 +42,7 @@ catch( err ) {
 
   const HTML = createHTMLString( componentDataBySim );
 
-  fs.writeFileSync( 'binderjson.json', JSON.stringify( componentDataBySim, null, 2 ) );
+  // fs.writeFileSync( 'binderjson.json', JSON.stringify( componentDataBySim, null, 2 ) );
   fs.writeFileSync( OUTPUT_FILE, HTML );
   console.log( `wrote final report to:  ${OUTPUT_FILE}` );
 } )();

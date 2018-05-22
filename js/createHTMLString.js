@@ -19,19 +19,9 @@ const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
  */
 const createHTMLString = function( data ) {
 
-  const componentTypes = {};
-  const sims = Object.keys( data );
-  sims.forEach( sim => {
-    const componentTypesForSim = Object.keys( data[ sim ] );
-    componentTypesForSim.forEach( componentTypeForSim => {
-      componentTypes[ componentTypeForSim ] = null; // Just enumerating keys
-    } );
-  } );
-
-
-  const componentTypesArray = Object.keys( componentTypes );
-
-  let HTML = `<html><head>
+  let HTML = `<!DOCTYPE html>
+<html>
+<head>
 <style>
  body {
     background-color: #acd7ed;
@@ -45,15 +35,12 @@ const createHTMLString = function( data ) {
 </style>
 </head>
 <body>`;
-  componentTypesArray.forEach( function( repoAndComponent ) {
 
-    let repo = repoAndComponent.split( '/' )[ 0 ];
-    let component = repoAndComponent.split( '/' )[ 1 ];
+  for ( const [repoAndComponent, componentSims] of Object.entries( data ) ) {
 
-    const simsThatUseTheComponent = sims.filter( sim => {
-      return data[ sim ][ repoAndComponent ];
-    } );
-    const numberOfSimsThatUseTheComponent = simsThatUseTheComponent.length;
+    const [repo, component] = repoAndComponent.split( '/' );
+
+    const numberOfSimsThatUseTheComponent = Object.keys( componentSims ).length;
 
     // get the markdown file
     const markdownHTML = getMarkdownFileAsHTML( repo, component );
@@ -67,21 +54,20 @@ const createHTMLString = function( data ) {
 <li>Number of development sims with component: ${numberOfSimsThatUseTheComponent}</li>
 </ul>` + markdownHTML;
 
-    //
-    const simReports = sims.map( sim => {
-      const components = data[ sim ][ repoAndComponent ];
-      if ( components ) {
-        return '<section>' + sim + ':' + ( components.map( c => {
-          return '<image src=' + c + '></image>';
-        } ).join( ' ' ) ) + '</section>';
-      }
-      else {
-        // return '<section>' + sim + ':' + 'not used</section>';
-        return '';
-      }
-    } );
+    const simReports = [];
+
+    for ( const [ sim, simComponentUrlList ] of Object.entries( componentSims ) ) {
+      
+      simReports.push( `<section>
+  <h3>${sim}</h3>
+  ${ simComponentUrlList.map( url => `<image src="${url}" ></image>` ) }
+  </section>` );
+    }
+
     HTML = HTML + simReports.join( '\n' ) + '<hr/>';
-  } );
+
+  }
+  
   HTML = HTML + '</body></html>';
 
   return HTML;
