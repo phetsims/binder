@@ -21,7 +21,7 @@
 'use strict';
 
 // modules
-const buildLocal = require( '../../perennial/common/buildLocal' );
+const buildLocal = require( '../../perennial/js/common/buildLocal' );
 const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
 
@@ -30,7 +30,7 @@ const getSims = function() {
   return fs.readFileSync( '../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
 
-const baseURL = buildLocal.localhostURL + ( buildLocal.localhostPort ? `:${buildLocal.localhostPort}` : '' );
+const baseURL = buildLocal.localhostURL; // localhostURL should include the port number if present
 
 module.exports = async ( commandLineSims ) => {
   const browser = await puppeteer.launch();
