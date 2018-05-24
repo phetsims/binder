@@ -21,6 +21,7 @@
 'use strict';
 
 // modules
+const buildLocal = require( '../../perennial/common/buildLocal' );
 const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
 
@@ -28,6 +29,8 @@ const fs = require( 'fs' );
 const getSims = function() {
   return fs.readFileSync( '../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
+
+const baseURL = buildLocal.localhostURL + ( buildLocal.localhostPort ? `:${buildLocal.localhostPort}` : '' );
 
 module.exports = async ( commandLineSims ) => {
   const browser = await puppeteer.launch();
@@ -64,7 +67,7 @@ module.exports = async ( commandLineSims ) => {
     } );
 
     // navigate to the sim page
-    const url = `http://localhost:8080/${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
+    const url = `${baseURL}/${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
     console.log( '\nloading: ' + sim );
     await page.goto( url );
 

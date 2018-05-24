@@ -1,0 +1,20 @@
+<section class="component">
+    <h1>{{repoAndComponent}}</h1>
+    <ul class="meta">
+        <li>{{componentLink repoAndComponent}}</li>
+        <li>Number of sims that use this component: {{numSims}}</li>
+    </ul>
+
+    {{markdown}}
+
+    <section class="sims">
+    {{#each sims as |imgList|}}
+        <h3>{{@key}}</h3>
+        <ul>
+        {{#each imgList}}
+            <li><img src="{{this}}"></li>
+        {{/each}}
+        </ul>
+    {{/each}}
+    </section>
+</section>

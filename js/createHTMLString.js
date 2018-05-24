@@ -10,6 +10,7 @@
 
 const fs = require( 'fs' );
 const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
+const handlebars = require( 'handlebars' );
 
 /**
  * The data object has levels like sims=>components=>dataURLs
@@ -19,22 +20,9 @@ const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
  */
 const createHTMLString = function( data ) {
 
-  let HTML = `<!DOCTYPE html>
-<html>
-<head>
-<style>
- body {
-    background-color: #acd7ed;
-  }
-  img {
-    margin: 6px;
-  }
-  table, th, td {
-   border: 1px solid black;
-}
-</style>
-</head>
-<body>`;
+  let baseTemplate = handlebars.compile( fs.readFileSync( '../templates/base.html', 'utf8' ) ); // formerly HTML
+  let singleComponentTemplate = handlebars.compile( fs.readFileSync( '../templates/singleComponent.html', 'utf8' ) );
+  let componentsHTML = '';
 
   for ( const [repoAndComponent, componentSims] of Object.entries( data ) ) {
 
@@ -45,33 +33,27 @@ const createHTMLString = function( data ) {
     // get the markdown file
     const markdownHTML = getMarkdownFileAsHTML( repo, component );
 
+    const componentContext = {
+      repoAndComponent: repoAndComponent,
+      sims: componentSims,
+      simCount: numberOfSimsThatUseTheComponent,
+      markdown: new handlebars.SafeString( markdownHTML )
+    };
 
-    // TODO: support subdirectories for the component.
-    HTML = HTML + `<h1 id="${component.toLowerCase()}">${repoAndComponent}</h1>
-<ul>
-<li><a href="https://github.com/phetsims/${repo}/blob/master/js/${component}.js">Source Code and Options</a></li>
-<li>Number of published sims with component:</li>
-<li>Number of development sims with component: ${numberOfSimsThatUseTheComponent}</li>
-</ul>` + markdownHTML;
-
-    const simReports = [];
-
-    for ( const [ sim, simComponentUrlList ] of Object.entries( componentSims ) ) {
-      
-      simReports.push( `<section>
-  <h3>${sim}</h3>
-  ${ simComponentUrlList.map( url => `<image src="${url}" ></image>` ) }
-  </section>` );
-    }
-
-    HTML = HTML + simReports.join( '\n' ) + '<hr/>';
-
+    componentsHTML += singleComponentTemplate( componentContext );
   }
-  
-  HTML = HTML + '</body></html>';
 
-  return HTML;
+  return baseTemplate( { content: componentsHTML } );
 };
+
+// handlebars helper functions
+
+handlebars.registerHelper( 'componentLink', ( repoAndComponent ) => {
+  let [ repo, component ] = repoAndComponent.slice( '/' );
+  return new handlebars.SafeString( 
+    `<a href="https://github.com/phetsims/${repo}/blob/master/js/${component}.js">Source Code and Options</a>`
+  );
+} );
 
 
 /**
