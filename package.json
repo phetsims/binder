@@ -7,7 +7,8 @@
     "url": "https://github.com/phetsims/binder.git"
   },
   "scripts": {
-    "build": "node generate.js",
+    "build": "node js/generate.js",
+    "build-json": "node js/createHTMLString.js json js/binderjson.json > docs/index.html",
     "test-local-server": "node js/serverTest.js"
   },
   "devDependencies": {

@@ -43,7 +43,7 @@ const createHTMLString = function( data ) {
     componentsHTML += singleComponentTemplate( componentContext );
   }
 
-  return baseTemplate( { content: componentsHTML } );
+  return baseTemplate( { content: componentsHTML, components: Object.keys( data ) } );
 };
 
 // handlebars helper functions

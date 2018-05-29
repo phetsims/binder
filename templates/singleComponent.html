@@ -7,14 +7,17 @@
 
     {{markdown}}
 
-    <section class="sims">
+    <section class="sims container-fluid">
+        <h2>Sim Examples</h2>
     {{#each sims as |imgList|}}
-        <h3>{{@key}}</h3>
-        <ul>
-        {{#each imgList}}
-            <li><img src="{{this}}"></li>
-        {{/each}}
-        </ul>
+        <div>
+            <h3>{{@key}}</h3>
+            <ul>
+            {{#each imgList}}
+                <li><img src="{{this}}"></li>
+            {{/each}}
+            </ul>
+        </div>
     {{/each}}
     </section>
 </section>
