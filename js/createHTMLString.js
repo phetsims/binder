@@ -20,8 +20,8 @@ const handlebars = require( 'handlebars' );
  */
 const createHTMLString = function( data ) {
 
-  let baseTemplate = handlebars.compile( fs.readFileSync( '../templates/base.html', 'utf8' ) ); // formerly HTML
-  let singleComponentTemplate = handlebars.compile( fs.readFileSync( '../templates/singleComponent.html', 'utf8' ) );
+  let baseTemplate = handlebars.compile( fs.readFileSync( __dirname + '/../templates/base.html', 'utf8' ) ); // formerly HTML
+  let singleComponentTemplate = handlebars.compile( fs.readFileSync( __dirname + '/../templates/singleComponent.html', 'utf8' ) );
   let componentsHTML = '';
 
   for ( const [repoAndComponent, componentSims] of Object.entries( data ) ) {

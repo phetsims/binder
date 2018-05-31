@@ -22,7 +22,7 @@ module.exports = function( repo, component ) {
 
   let markdown = '';
   try {
-    const m = fs.readFileSync( `../../${repo}/docs/${component}.md` );
+    const m = fs.readFileSync( __dirname + `/../../${repo}/doc/${component}.md` );
     markdown = marked( m.toString() );
 
     // Use subdirectory for images, so that different directories can have images of the same name

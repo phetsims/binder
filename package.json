@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "node js/generate.js",
-    "build-json": "node js/createHTMLString.js json js/binderjson.json > docs/index.html",
+    "build-json": "node js/createHTMLString.js json ./binderjson.json > ./doc/index.html",
     "test-local-server": "node js/serverTest.js"
   },
   "devDependencies": {
@@ -17,5 +17,13 @@
     "handlebars": "^4.0.11",
     "marked": "0.3.19",
     "puppeteer": "1.4.0"
+  },
+  "phet": {
+    "requirejsNamespace": "BINDER",
+    "runnable": true,
+    "supportedBrands": [
+      "phet",
+      "adapted-from-phet"
+    ]
   }
 }

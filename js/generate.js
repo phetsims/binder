@@ -14,8 +14,10 @@ const fsExtra = require( 'fs-extra' ); // eslint-disable-line
 const getFromSimInMaster = require( './getFromSimInMaster' );
 const createHTMLString = require( './createHTMLString' );
 
+// resolve image and doc paths as constants
+
 // constants
-const OUTPUT_FILE = '../docs/index.html';
+const OUTPUT_FILE = __dirname + '/../doc/index.html';
 
 const myArgs = process.argv.slice( 2 );
 
@@ -27,8 +29,8 @@ console.log( 'streaming to ' + OUTPUT_FILE );
 try {
 
   // TODO: this assumes we only need image from two repos
-  fsExtra.copySync( '../../sun/docs/images', '../docs/images/sun' );
-  fsExtra.copySync( '../../scenery-phet/images', '../docs/images/scenery-phet' );
+  fsExtra.copySync( __dirname + '/../../sun/doc/images', __dirname + '/../doc/images/sun' );
+  fsExtra.copySync( __dirname + '/../../scenery-phet/images', __dirname + '/../doc/images/scenery-phet' );
 }
 catch( err ) {
   console.error( err );

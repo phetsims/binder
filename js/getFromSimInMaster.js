@@ -21,13 +21,13 @@
 'use strict';
 
 // modules
-const buildLocal = require( '../../perennial/js/common/buildLocal' );
+const buildLocal = require( __dirname + '/../../perennial/js/common/buildLocal' );
 const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
 
 // Helper function to get the sim list from perennial
 const getSims = function() {
-  return fs.readFileSync( '../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
+  return fs.readFileSync( __dirname + '/../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
 
 const baseURL = buildLocal.localhostURL; // localhostURL should include the port number if present
