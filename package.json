@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "fs-extra": "6.0.1",
-    "grunt": "~1.0.0",
+    "grunt": "^1.0.3",
     "handlebars": "^4.0.11",
     "marked": "0.3.19",
     "puppeteer": "1.4.0"
