@@ -25,21 +25,74 @@ const buildLocal = require( __dirname + '/../../perennial/js/common/buildLocal' 
 const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
 
+const reposDirectory = `${__dirname}/../..`;
+
 // Helper function to get the sim list from perennial
-const getSims = function() {
-  return fs.readFileSync( __dirname + '/../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
+const getActiveSims = function() {
+  return fs.readFileSync( `${reposDirectory}/perennial/data/active-sims` ).toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
+
+const getAccessibleSims = () => (
+  fs.readFileSync( `${reposDirectory}/perennial/data/accessibility` ).toString().trim().split( '\n' ).map( sim => sim.trim() )
+);
 
 const baseURL = buildLocal.localhostURL; // localhostURL should include the port number if present
 
-module.exports = async ( commandLineSims ) => {
+const processSimPage = async ( sim, page ) => {
+  const url = `${baseURL}/${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
+  await page.goto( url, { waitUntil: 'networkidle2' } );
+
+  const data = await page.evaluate( ( sim ) => {
+    window.addEventListener( 'message', function( event ) {
+      if ( event.data ) {
+        try {
+          let messageData = JSON.parse( event.data );
+          if ( messageData.type === 'load' ) {
+            console.log( 'loaded', sim );
+
+            if ( phet.phetCore.InstanceRegistry ) {
+              return phet.phetCore.InstanceRegistry.map;
+            }
+            console.error( 'InstanceRegistry not defined. This normally means no components are in this sim.' );
+            return undefined;
+          }
+        }
+        catch( e ) {
+          // message isn't what we wanted it to be, so ignore it
+          console.log( 'CAUGHT ERROR:', e.message );
+        }
+      }
+      else {
+        console.log( 'no data on message event' );
+      }
+    } );
+  } );
+};
+
+module.exports = async ( simList ) => {
+
   const browser = await puppeteer.launch();
 
   let data = {};
 
   // override to generate based on only sims provided
-  let sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
+  let sims = simList ? simList.split( ',' ) : getSims();
   console.log( 'sims to load:', sims.join( ', ' ) );
+
+  puppeteer.launch()
+  .then( async browser => {
+    let simPages = sims.map( async (sim) => {
+      let data = browser.newPage().then( page => processSimPage( sim, page ) );
+    } );
+
+    Promise.all( simPages ).then( pages => {
+
+    } );
+  } );
+
+/**
+ * Start original
+ */
 
   for ( let sim of sims ) {
 
@@ -47,7 +100,7 @@ module.exports = async ( commandLineSims ) => {
 
     await page.exposeFunction( 'updateComponentData', (simName, dataMap) => {
       for (let component in dataMap ) {
-  
+
         if ( !data[ component ] ) {
           data[ component ] = {};
         }
