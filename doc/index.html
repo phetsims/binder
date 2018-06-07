@@ -9,6 +9,9 @@
 <body>
     <!-- Simulate look and feel of Bootstrap docs -->
     <!-- Faded permanent menu at top left -->
+    <div class="d-flex flex-column flex-md-row align-itmes-center p-3 px-md-4 bg-dark border-bottom">
+      <h2 class="text-light">PhET Style Guide</h2>
+    </div>
     <div class="container-fluid">
         <div class="row flex-xl-nowrap">
             <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
@@ -803,33 +806,32 @@
     <h2 id="general-design-considerations">General Design Considerations</h2>
 <p>Here’s when and why we use radio button groups:</p>
 <ul>
-<li>Used to group a set of checkable buttons, known as radio buttons, where only one button may be in a checked state (i.e., selected state).</li>
+<li>Used to group a set of checkable buttons, known as radio buttons, where only one button may be in a selected state.</li>
 <li>Radio button groups or radio groups, may look like a group of traditional radio buttons, or may look like a group of items that users switch between. In PhET simulations the radio button themselves may appear more like objects or buttons rather than a traditional radio button with a label and selectable circle input. </li>
 <li>Radio button groups in PhET Simulations start with a radio button selected (I have not found one that does not).</li>
 </ul>
 <h2 id="aesthetic-considerations">Aesthetic Considerations</h2>
 <ul>
-<li>Label text - is succinct and hopefully sounds good when read together with &quot;selected&quot;. For example, in Area Model, the first Area Grid Size radio button, might sound like, &quot;10 by 10, selected&quot;. In Balloons and Static Electricity, user may hear, &quot;Show all charges, selected&quot;.</li>
+<li>Label text - is succinct and hopefully sounds good when read together with &quot;selected&quot;. For example, in Area Model, the first Area Grid Size radio button, might sound like, &quot;10 by 10, selected&quot;. In Balloons and Static Electricity, a user may hear, &quot;Show all charges, selected&quot;.</li>
 <li>Focus highlight - light focus around group, thicker pink focus around selected item.</li>
 </ul>
 <h2 id="accessibility-considerations">Accessibility Considerations</h2>
 <ul>
 <li>The following information is useful for fully communicating the interaction in the non-visual experience.  <ul>
 <li>the name of the radio button in the group that has focus,</li>
-<li>the state (checked or not checked) of the radio button,</li>
+<li>the state (selected or not selected) of the radio button,</li>
 <li>the fact that button is in a radiogroup, or in a radio button list,</li>
 <li>the name of the group, and</li>
 <li>the number of buttons or options in the group, </li>
 </ul>
 </li>
-<li>It is important for a designer to consider upfront if the group&#39;s name should be part of the heading outline of the simulation or not. Placing the group&#39;s name in the headig outline (Sample HTML 1) gives the group&#39;s name more visibility (findability) in the non-visual experience.</li>
+<li>It is important for a designer to consider upfront if the group&#39;s name should be part of the heading outline of the simulation or not. Placing the group&#39;s name in the heading outline (Sample HTML 1) gives the group&#39;s name more visibility (e.g., findability) in the non-visual experience. If that visibility is not necessary, you could use a <code>legend</code> element (Sample HTML 2). </li>
 </ul>
-<h3 id="special-note">Special Note</h3>
+<h3 id="special-notes-and-questions">Special Notes and Questions</h3>
 <ul>
-<li>Using either a <code>div</code> or <code>fieldset</code> as the containing parent with the <code>role=&quot;radiogroup&quot;</code> provides similar experiences. Note that we still need to test in NVDA and JAWS to confirm that <code>fieldset</code> it the best parent container.</li>
-</ul>
-<h3 id="gesture-support">Gesture Support</h3>
-<ul>
+<li>Using either a <code>div</code> or <code>fieldset</code> as the containing parent with the <code>role=&quot;radiogroup&quot;</code> provides similar experiences. Note that we still need to test in NVDA and JAWS to confirm that <code>fieldset</code> is the best parent container.</li>
+<li><strong>Note</strong> the HTML is different from the ARIA Practices Examples because it uses more native HTML. The ARIA Examples, however, sound slightly better, consistently reading out radiogroup role and radio count without any duplicate list semantics. I&#39;m not sure if the ARIA examples require heavier explicit handling of keyboard support because they do not use native form elements?<h3 id="gesture-support">Gesture Support</h3>
+</li>
 <li>ToDo</li>
 </ul>
 <h3 id="keyboard-support">Keyboard Support</h3>
@@ -844,19 +846,19 @@
 <tbody>
 <tr>
 <td style="text-align:left">Tab</td>
-<td style="text-align:left">Moves focus to the radio group focus is set to the checked <code>radio</code> button. (PhET radio group&#39;s generally have a pre-selected radio button). If a radio button is not checked, focus moves to the first radio button in the group. PhET Focus Highlight: Keyboard focus highlight goes on the radio button, and a group focus highlight goes on the group.</td>
+<td style="text-align:left">Moves focus to the radio group and focus is set to the selected <code>radio</code> button. (PhET radio group&#39;s generally have a pre-selected radio button). If a radio button is not selected, focus moves to the first radio button in the group. PhET&#39;s keyboard focus highlight goes on the radio button, and a group focus highlight goes on the group.</td>
 </tr>
 <tr>
 <td style="text-align:left">Space</td>
-<td style="text-align:left">If the <code>radio</code> button with focus is not checked, changes the state to <code>checked</code>. Otherwise, does nothing. <strong>Note:</strong> The state where a radio button is not checked only occurs on page load. (Unlikely, for PhET as radio button groups always have a radio button pre-selected.)</td>
+<td style="text-align:left">If the <code>radio</code> button with focus is not selected, it changes the state to selected. Otherwise, does nothing. <strong>Note:</strong> The state where a radio button is not selected only occurs on page load. (<strong>Note:</strong> a radio button button group starting without a pre-selected radio buton is unlikely for a PhET Sim.)</td>
 </tr>
 <tr>
 <td style="text-align:left">Right arrow, Down arrow</td>
-<td style="text-align:left">Move focus to and check the next radio button in the group. If focus is on the last radio button, focus moves to the first radio button in the group. The state of the previously checked radio button is changed to unchecked.</td>
+<td style="text-align:left">Moves focus to and selects the next radio button in the group. If focus is on the last radio button, focus moves to the first radio button in the group. The state of the previously selected radio button is changed to unchecked.</td>
 </tr>
 <tr>
 <td style="text-align:left">Left arrow, Up arrow</td>
-<td style="text-align:left">Move focus to and check the previous radio button in the group. If focus is on the first radio button, moves focus to and checks the last radio button. The state of the previously checked radio button is changed to unchecked.</td>
+<td style="text-align:left">Moves focus to and selects the previous radio button in the group. If focus is on the first radio button, moves focus to and selects the last radio button. The state of the previously selected radio button is changed to unselected.</td>
 </tr>
 </tbody>
 </table>
@@ -877,19 +879,19 @@
 <td style="text-align:left">radiogroup</td>
 <td style="text-align:left"></td>
 <td style="text-align:left">fieldset</td>
-<td style="text-align:left">Identifies the <code>fieldset</code> element as a container for a group of <code>radio</code> buttons. Is not focusable because focus is managed using a roving tabindex strategy as described below. (<strong>Question:</strong> How are we managing focus?)</td>
+<td style="text-align:left">Identifies the <code>fieldset</code> element as a container for a group of <code>radio</code> buttons. Group is not focusable because focus is managed using a roving tabindex strategy as described below. (<strong>Question:</strong> How are we managing focus?)</td>
 </tr>
 <tr>
 <td style="text-align:left"></td>
 <td style="text-align:left"><code>aria-labelledby=&quot;[IDREF&quot;</code></td>
 <td style="text-align:left"><code>h3</code> (heading with appropriate heading level)</td>
-<td style="text-align:left">Refers to the element that contains the label of the radio group. The <code>legend</code> element can be used instead of a heading, and provides the group&#39;s name implicitly without <code>aria-labelledby</code>. Note, however, the <code>legend</code> is not included in the heading outline for screen readers.</td>
+<td style="text-align:left">Refers to the element that contains the label of the radio group. The <code>legend</code> element can be used instead of a heading, and would provide the group&#39;s name implicitly without <code>aria-labelledby</code>. Note, however, the <code>legend</code> element is not included in the heading outline for screen readers.</td>
 </tr>
 <tr>
 <td style="text-align:left"></td>
 <td style="text-align:left"><code>tabindex=&quot;0&quot;</code></td>
 <td style="text-align:left"><code>ul</code></td>
-<td style="text-align:left">Includes the radio group in the page Tab sequence. Applied to the radio group because <code>aria--activedescendant</code> is used to manage focus as described below. (<strong>Question:</strong> How are we managing focus?)</td>
+<td style="text-align:left">Includes the radio group in the page Tab sequence. Applied to the radio group because <code>aria-activedescendant</code> is used to manage focus as described below. (<strong>Question:</strong> How are we managing focus?)</td>
 </tr>
 <tr>
 <td style="text-align:left"></td>
@@ -901,7 +903,7 @@
 <td style="text-align:left"></td>
 <td style="text-align:left"><code>type=&quot;radio&quot;</code></td>
 <td style="text-align:left"><code>input</code></td>
-<td style="text-align:left">Identifies the <code>input</code> element as an radio button. The accessible name is computed from the child text content of the <code>label</code> element.</td>
+<td style="text-align:left">Identifies the <code>input</code> element as a radio button. The accessible name is computed from the child text content of the <code>label</code> element.</td>
 </tr>
 <tr>
 <td style="text-align:left"></td>
@@ -911,9 +913,9 @@
 </tr>
 <tr>
 <td style="text-align:left"></td>
-<td style="text-align:left"><code>aria-checked=&quot;true&quot;</code>, or <code>checked</code> (<strong>Question:</strong> Do we use teh aria attribute or the HTML5 attribute currently?)</td>
+<td style="text-align:left"><code>aria-checked=&quot;true&quot;</code>, or <code>checked</code> (<strong>Question:</strong> Do we use the aria attribute or the HTML5 attribute currently?)</td>
 <td style="text-align:left"></td>
-<td style="text-align:left">Identifies the radio button which is checked. CSS attribute selectors (e.g. [aria-checked=&quot;true&quot;]) are used to synchronize the visual states with the value of the aria-checked attribute. (N/A in PhET&#39;s case) The CSS ::before pseudo-class is used to indicate visual state of checked radio buttons to support high contrast settings in operating systems and browsers. (N/A in PhET&#39;s case)</td>
+<td style="text-align:left">Identifies the radio button which is selected. CSS attribute selectors (e.g. [<code>aria-checked=&quot;true&quot;</code>]) are used to synchronize the visual states with the value of the <code>aria-checked</code> attribute. (N/A in PhET&#39;s case) The CSS ::before pseudo-class is used to indicate visual state of selected radio buttons to support high contrast settings in operating systems and browsers. (N/A in PhET&#39;s case)</td>
 </tr>
 </tbody>
 </table>
@@ -953,14 +955,24 @@
     &lt;/ul&gt;
 &lt;/fieldset&gt;
 </code></pre>
+<h3 id="phet-components">PhET Components</h3>
+<ul>
+<li>AquaRadioButtons.js</li>
+<li>VerticalAquaRadioButtons.js</li>
+<li>RadioButtonGroup.js (<strong>Note:</strong> I don see this on sun.)</li>
+</ul>
 <h3 id="supporting-accessibility-resources">Supporting Accessibility Resources</h3>
 <ul>
-<li>Adapted from <a href="??">ARIA Practices ??</a></li>
+<li><a href="https://www.w3.org/TR/wai-aria-1.1/#radiogroup">ARIA 1.1 radiogroup role</a></li>
+<li><a href="https://www.w3.org/TR/wai-aria-1.1/#radio">ARIA 1.1 radio role</a></li>
+<li>Adapted techncal notes from <a href="https://www.w3.org/TR/wai-aria-practices-1.1/#radiobutton">ARIA Practices 1.1, 3.16 Radio Group</a></li>
+<li>ARIA Example 1 <a href="https://www.w3.org/TR/wai-aria-practices-1.1/examples/radio/radio-1/radio-1.html">Radio Group using Roving Tab Index</a></li>
+<li>ARIA Example 2 <a href="https://www.w3.org/TR/wai-aria-practices-1.1/examples/radio/radio-2/radio-2.html">Radio Group Example Using aria-activedescendant</a></li>
 </ul>
 <h3 id="design-doc-content-template-text">Design Doc Content Template Text</h3>
 <p><strong>Radio Button Group</strong>
 Group Name via <code>h3</code> with <code>aria-labelledby</code>: (e.g. Sample 1) OR
-Group Name via legend: (e.g. Sample 2)<br>Radio group: <code>fieldset</code> with <code>role=&quot;radiogroup&quot;</code>
+Group Name via <code>legend</code>: (e.g. Sample 2)<br>Radio button group: <code>fieldset</code> with <code>role=&quot;radiogroup&quot;</code>
 Radio buttons contained in an <code>ul</code> with list items, <code>li</code>
 List names for radio buttons in the group</p>
 <ul>
@@ -2547,3 +2559,4 @@ Or as listed in simulation
     <script type="text/javascript" src="js/docs.min.js"></script>
 </body>
 </html>
+
