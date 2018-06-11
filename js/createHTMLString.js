@@ -34,7 +34,8 @@ const createHTMLString = function( data ) {
     const markdownHTML = getMarkdownFileAsHTML( repo, component );
 
     const componentContext = {
-      repoAndComponent: repoAndComponent,
+      repo: repo,
+      component: component,
       sims: componentSims,
       simCount: numberOfSimsThatUseTheComponent,
       markdown: new handlebars.SafeString( markdownHTML )
@@ -48,9 +49,8 @@ const createHTMLString = function( data ) {
 
 // handlebars helper functions
 
-handlebars.registerHelper( 'componentLink', ( repoAndComponent ) => {
-  let [ repo, component ] = repoAndComponent.slice( '/' );
-  return new handlebars.SafeString( 
+handlebars.registerHelper( 'componentLink', ( repo, component ) => {
+  return new handlebars.SafeString(
     `<a href="https://github.com/phetsims/${repo}/blob/master/js/${component}.js">Source Code and Options</a>`
   );
 } );

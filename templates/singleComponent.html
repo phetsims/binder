@@ -1,23 +1,27 @@
-<section class="component">
-    <h1>{{repoAndComponent}}</h1>
+<section class="component" id="{{repo}}-{{component}}">
+  <section class="component-data container-fluid">
+    <h1>{{component}}</h1>
     <ul class="meta">
-        <li>{{componentLink repoAndComponent}}</li>
-        <li>Number of sims that use this component: {{numSims}}</li>
+      <li>{{componentLink repo component}}</li>
+      <li>Number of sims that use this component: {{numSims}}</li>
     </ul>
 
     {{markdown}}
+  </section>
 
-    <section class="sims container-fluid">
-        <h2>Sim Examples</h2>
-    {{#each sims as |imgList|}}
-        <div>
-            <h3>{{@key}}</h3>
-            <ul>
-            {{#each imgList}}
-                <li><img src="{{this}}"></li>
-            {{/each}}
-            </ul>
-        </div>
-    {{/each}}
-    </section>
+  <section class="sims container-fluid">
+    <h2>Sim Examples</h2>
+    <div class="row">
+      {{#each sims as |imgList|}}
+      <div class="col-sm-2 col-md-6 sim-example">
+        <button class="btn btn-outline-secondary btn-block" data-toggle="collapse" data-target="#{{@key}}-{{component}}">{{@key}}</button>
+        <ul id="{{@key}}-{{component}}" class="collapse list-group list-group-flush">
+          {{#each imgList}}
+          <li class="list-group-item"><img src="{{this}}"></li>
+          {{/each}}
+        </ul>
+      </div>
+      {{/each}}
+    </div>
+  </section>
 </section>

@@ -5,11 +5,20 @@
     <title>PhET Interactive Simulations Style Guide</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/docs.min.css">
+    <style media="screen">
+      show {
+        display: block;
+      }
+
+      section.component {
+        display: none;
+      }
+    </style>
 </head>
 <body>
     <!-- Simulate look and feel of Bootstrap docs -->
     <!-- Faded permanent menu at top left -->
-    <div class="d-flex flex-column flex-md-row align-itmes-center p-3 px-md-4 bg-dark border-bottom">
+    <div id="header" class="d-flex flex-column flex-md-row align-itmes-center p-3 px-md-4 bg-dark border-bottom bd-navbar">
       <h2 class="text-light">PhET Style Guide</h2>
     </div>
     <div class="container-fluid">
@@ -25,6 +34,8 @@
                 </nav>
             </div>
             <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+              <div id="content-fill">
+              </div>
                 {{{ content }}}
             </main>
         </div>
@@ -32,6 +43,36 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="js/docs.min.js"></script>
+
+    <script type="text/javascript">
+
+      function fillContentSection () {
+        let [r, c] = this.innerText.split('/');
+        let sectionContent = document.getElementById( `${r}-${c}` ).innerHTML;
+        document.getElementById( 'content-fill' ).innerHTML = sectionContent;
+      }
+
+      let links = document.querySelectorAll( 'a.bd-toc-link' );
+
+      links.forEach( link => {
+        link.addEventListener( 'click', fillContentSection );
+      } );
+
+      document.querySelectorAll( 'table' ).forEach( table => { table.classList.add( 'table' ); } );
+
+      // wrap code sections
+      let codeSnippets = document.querySelectorAll( '.component pre code' );
+
+      codeSnippets.forEach( code => {
+        let parent = code.parentElement;  //pre
+        let newElem = document.createElement( 'figure' );
+        newElem.classList.add( 'highlight' );
+        newElem.appendChild( parent.cloneNode( true ) );
+        parent.after( newElem );
+        parent.remove();
+      } );
+
+      document.getElementById( 'content-fill' ).innerHTML = document.querySelector( '.component' ).innerHTML;
+    </script>
 </body>
 </html>
