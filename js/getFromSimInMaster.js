@@ -47,7 +47,7 @@ module.exports = async ( commandLineSims ) => {
 
     await page.exposeFunction( 'updateComponentData', (simName, dataMap) => {
       for (let component in dataMap ) {
-  
+
         if ( !data[ component ] ) {
           data[ component ] = {};
         }
@@ -114,7 +114,7 @@ module.exports = async ( commandLineSims ) => {
 
   // TODO: is this the best place for this?
   // write data to a file so that we don't have to run this so often for quick iteration.
-  fs.writeFileSync( 'binderjson.json', JSON.stringify( data, null, 2 ) );
+  fs.writeFileSync( __dirname + '../binderjson.json', JSON.stringify( data, null, 2 ) );
 
   // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level.
   return data;

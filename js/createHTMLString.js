@@ -68,5 +68,4 @@ if ( myArgs[ 0 ] && myArgs[ 0 ] === 'json' ) {
   const inputFile = myArgs[ 1 ];
   const report = createHTMLString( JSON.parse( fs.readFileSync( inputFile ) ) );
   console.log( report );
-
 }
