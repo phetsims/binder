@@ -27,7 +27,8 @@ function processFile( filePath ) {
   let docIdx = pathArray.indexOf( 'doc' );
   let repo = pathArray[ docIdx - 1 ];
   mdObject.content  = marked( mdObject.content ).split( '<img src="images/' ).join( '<img src="images/' + repo + '/' );
-  return { ...mdObject, repo }; // eslint-disable-line
+  mdObject.repo = repo;
+  return mdObject;
 }
 
 function getFullDocPaths( repo ) {
@@ -114,7 +115,11 @@ const createHTMLString = function( data ) {
       } );
   }
 
-  return baseTemplate( { content: contentHTML, parents: parentComponents.map( p => ({...p.data, repo: p.repo}) ) } );
+  return baseTemplate( { content: contentHTML, parents: parentComponents.map( p => {
+    var retObj = p.data;
+    retObj.repo = p.repo;
+    return retObj;
+  } ) } );
 };
 
 // handlebars helper functions
