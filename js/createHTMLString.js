@@ -31,6 +31,7 @@ function processFile( filePath ) {
   return mdObject;
 }
 
+// responsible for returning a list of all filepaths for files within a `doc` directory for a given sim repo
 function getFullDocPaths( repo ) {
   let docDir = path.join( simsDirectory, repo, 'doc' );
   return getFilePathsFromDir( docDir, [] );
@@ -47,14 +48,12 @@ function getFilePathsFromDir( dir, filelist = [] ) {
   return filelist;
 }
 
-// function isMarkdown( filename ) {
-//   return filename.trim().toLowerCase().split('.').indexOf('md') >= 0;
-// }
-
+// flattens a multidimensional array
 function flatten( arr ) {
   return [].concat( ...arr );
 }
 
+// compile and get the given template file
 function getHandlebarsTemplate ( filename ) {
   const fullPath = path.normalize( __dirname + '/../templates/' + filename );
   return handlebars.compile( fs.readFileSync( fullPath, 'utf8' ) );
@@ -123,7 +122,6 @@ const createHTMLString = function( data ) {
 };
 
 // handlebars helper functions
-
 handlebars.registerHelper( 'componentLink', ( repo, component ) => {
   return new handlebars.SafeString(
     `<a href="https://github.com/phetsims/${repo}/blob/master/js/${component}.js">Source Code and Options</a>`
