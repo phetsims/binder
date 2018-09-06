@@ -83,16 +83,22 @@ const createHTMLString = function( data ) {
   }
 
   let parentComponents = Object.values( mdData ).filter( component => component.data.parent );
-  parentComponents.sort( (a,b) => a.data.order - b.data.order );
-
   // loop over each parent component
   for ( let parent of parentComponents ) {
       let componentsHTML = '';
 
       for ( const component of parent.data.components ) {
-        const key = `${parent.repo}/${component}`;
-        const sims = data[ key ];
-        const simCount = sims ? Object.keys( sims ).length : 0;
+        const repoComponent = `${parent.repo}/${component}`;
+        const simObject = data[ repoComponent ];
+        const simCount = simObject ? Object.keys( simObject ).length : 0;
+        const sims = simObject ?
+               Object.keys( simObject ).map( simName => {
+                 return {
+                   name: simName,
+                   images: simObject[ simName ]
+                 };
+               } ) : [];
+        
         let markdown = mdData[ component ] ? mdData[ component ].content : `<p>No markdown content for ${component} yet.</p>`;
         markdown = new handlebars.SafeString( markdown );
         const componentContext = {
@@ -125,6 +131,12 @@ const createHTMLString = function( data ) {
 handlebars.registerHelper( 'componentLink', ( repo, component ) => {
   return new handlebars.SafeString(
     `<a href="https://github.com/phetsims/${repo}/blob/master/js/${component}.js">Source Code and Options</a>`
+  );
+} );
+
+handlebars.registerHelper( 'simPageLink', ( simName ) => {
+  return new handlebars.SafeString(
+    `<a href="https://phet.colorado.edu/en/simulation/${simName}" target="_blank">PhET Simulation Page</a>`
   );
 } );
 

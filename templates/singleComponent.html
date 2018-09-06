@@ -12,16 +12,21 @@
   <section class="sims container-fluid">
     <h2>Sim Examples</h2>
     <div class="row">
-      {{#each sims as |imgList|}}
+      {{#if sims}}
+      {{#each sims}}
       <div class="col-sm-2 col-md-6 sim-example">
-        <button class="btn btn-outline-secondary btn-block" data-toggle="collapse" data-target="#{{@key}}-{{component}}">{{@key}}</button>
-        <ul id="{{@key}}-{{component}}" class="collapse list-group list-group-flush">
-          {{#each imgList}}
+        <button class="btn btn-outline-secondary btn-block" data-toggle="collapse" data-target="#{{this.name}}-{{../component}}">{{this.name}}</button>
+        <ul id="{{this.name}}-{{../component}}" class="collapse list-group list-group-flush">
+          <li class="list-group-item">{{simPageLink this.name}}</li>
+          {{#if this.images}}
+          {{#each this.images}}
           <li class="list-group-item"><img src="{{this}}"></li>
           {{/each}}
+          {{/if}}
         </ul>
       </div>
       {{/each}}
+      {{/if}}
     </div>
   </section>
 </section>
