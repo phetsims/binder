@@ -8,8 +8,8 @@
 /* eslint-env node */
 'use strict';
 
-const fs = require( 'fs' );
 // const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
+const fs = require( 'fs' );
 const handlebars = require( 'handlebars' );
 const marked = require( 'marked' );
 const matter = require( 'gray-matter' ); // eslint-disable-line

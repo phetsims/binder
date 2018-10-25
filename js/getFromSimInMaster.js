@@ -22,8 +22,8 @@
 
 // modules
 const buildLocal = require( __dirname + '/../../perennial/js/common/buildLocal' );
-const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
+const puppeteer = require( 'puppeteer' );
 
 // Helper function to get the sim list from perennial
 const getSims = function() {

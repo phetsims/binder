@@ -9,10 +9,10 @@
 /* eslint-env node */
 'use strict';
 
+const createHTMLString = require( './createHTMLString' );
 const fs = require( 'fs' );
 const fsExtra = require( 'fs-extra' ); // eslint-disable-line
 const getFromSimInMaster = require( './getFromSimInMaster' );
-const createHTMLString = require( './createHTMLString' );
 
 // resolve image and doc paths as constants
 
