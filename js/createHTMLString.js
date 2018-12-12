@@ -77,17 +77,17 @@ const createHTMLString = function( data ) {
   let documentPaths = flatten( [ ...repos ].map( getFullDocPaths ) );
 
   let mdData = {};
-  for ( let docPath of documentPaths ) {
+  for ( let docPath of documentPaths ) { // eslint-disable-line no-restricted-syntax
     let name = path.basename( docPath, '.md' );
     mdData[ name ] = processFile( docPath );
   }
 
   let parentComponents = Object.values( mdData ).filter( component => component.data.parent );
   // loop over each parent component
-  for ( let parent of parentComponents ) {
+  for ( let parent of parentComponents ) { // eslint-disable-line no-restricted-syntax
       let componentsHTML = '';
 
-      for ( const component of parent.data.components ) {
+      for ( const component of parent.data.components ) {  // eslint-disable-line no-restricted-syntax
         const repoComponent = `${parent.repo}/${component}`;
         const simObject = data[ repoComponent ];
         const simCount = simObject ? Object.keys( simObject ).length : 0;
