@@ -35,18 +35,18 @@ const baseURL = buildLocal.localhostURL; // localhostURL should include the port
 module.exports = async ( commandLineSims ) => {
   const browser = await puppeteer.launch();
 
-  let data = {};
+  const data = {};
 
   // override to generate based on only sims provided
-  let sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
+  const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
   console.log( 'sims to load:', sims.join( ', ' ) );
 
-  for ( let sim of sims ) { // eslint-disable-line no-restricted-syntax
+  for ( const sim of sims ) { // eslint-disable-line no-restricted-syntax
 
     const page = await browser.newPage();
 
-    await page.exposeFunction( 'updateComponentData', (simName, dataMap) => {
-      for (let component in dataMap ) {
+    await page.exposeFunction( 'updateComponentData', ( simName, dataMap ) => {
+      for ( const component in dataMap ) {
 
         if ( !data[ component ] ) {
           data[ component ] = {};
@@ -78,7 +78,7 @@ module.exports = async ( commandLineSims ) => {
         window.addEventListener( 'message', function( event ) {
           if ( event.data ) {
             try {
-              let messageData = JSON.parse( event.data );
+              const messageData = JSON.parse( event.data );
               if ( messageData.type === 'load' ) {
                 console.log( 'loaded', sim );
 

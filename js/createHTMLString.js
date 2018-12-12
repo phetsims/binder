@@ -22,10 +22,10 @@ const simsDirectory = path.normalize(__dirname + '/../..');
 function processFile( filePath ) {
 
   // get the front matter object
-  let mdObject = matter.read( filePath );
-  let pathArray = filePath.split( path.sep );
-  let docIdx = pathArray.indexOf( 'doc' );
-  let repo = pathArray[ docIdx - 1 ];
+  const mdObject = matter.read( filePath );
+  const pathArray = filePath.split( path.sep );
+  const docIdx = pathArray.indexOf( 'doc' );
+  const repo = pathArray[ docIdx - 1 ];
   mdObject.content  = marked( mdObject.content ).split( '<img src="images/' ).join( '<img src="images/' + repo + '/' );
   mdObject.repo = repo;
   return mdObject;
@@ -33,7 +33,7 @@ function processFile( filePath ) {
 
 // responsible for returning a list of all filepaths for files within a `doc` directory for a given sim repo
 function getFullDocPaths( repo ) {
-  let docDir = path.join( simsDirectory, repo, 'doc' );
+  const docDir = path.join( simsDirectory, repo, 'doc' );
   return getFilePathsFromDir( docDir, [] );
 }
 
@@ -67,24 +67,24 @@ function getHandlebarsTemplate ( filename ) {
  */
 const createHTMLString = function( data ) {
 
-  let baseTemplate = getHandlebarsTemplate( 'base.html' );
-  let parentComponentTemplate = getHandlebarsTemplate( 'parentComponent.html' );
-  let singleComponentTemplate = getHandlebarsTemplate( 'singleComponent.html' );
+  const baseTemplate = getHandlebarsTemplate( 'base.html' );
+  const parentComponentTemplate = getHandlebarsTemplate( 'parentComponent.html' );
+  const singleComponentTemplate = getHandlebarsTemplate( 'singleComponent.html' );
   let contentHTML = '';
 
   // get list of files in all doc/ directories, excluding binder (can be async)
-  let repos = new Set( Object.keys( data ).map( item => item.split( '/' )[0] ) );
-  let documentPaths = flatten( [ ...repos ].map( getFullDocPaths ) );
+  const repos = new Set( Object.keys( data ).map( item => item.split( '/' )[0] ) );
+  const documentPaths = flatten( [ ...repos ].map( getFullDocPaths ) );
 
-  let mdData = {};
-  for ( let docPath of documentPaths ) { // eslint-disable-line no-restricted-syntax
-    let name = path.basename( docPath, '.md' );
+  const mdData = {};
+  for ( const docPath of documentPaths ) { // eslint-disable-line no-restricted-syntax
+    const name = path.basename( docPath, '.md' );
     mdData[ name ] = processFile( docPath );
   }
 
-  let parentComponents = Object.values( mdData ).filter( component => component.data.parent );
+  const parentComponents = Object.values( mdData ).filter( component => component.data.parent );
   // loop over each parent component
-  for ( let parent of parentComponents ) { // eslint-disable-line no-restricted-syntax
+  for ( const parent of parentComponents ) { // eslint-disable-line no-restricted-syntax
       let componentsHTML = '';
 
       for ( const component of parent.data.components ) {  // eslint-disable-line no-restricted-syntax
@@ -141,7 +141,7 @@ handlebars.registerHelper( 'simPageLink', ( simName ) => {
 } );
 
 handlebars.registerHelper( 'navList', (components, repo) => {
-  let itemsHTML = components.map( c => `<li><a href="#${repo}-${c}">${c}</a></li>` ).join('\n');
+  const itemsHTML = components.map( c => `<li><a href="#${repo}-${c}">${c}</a></li>` ).join('\n');
   return '<ul class="nav bd-sidenav">' + itemsHTML + '</ul>';
 } );
 
