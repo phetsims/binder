@@ -41,7 +41,7 @@ module.exports = async ( commandLineSims ) => {
   const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
   console.log( 'sims to load:', sims.join( ', ' ) );
 
-  for ( const sim of sims ) { // eslint-disable-line no-restricted-syntax
+  for ( const sim of sims ) {
 
     const page = await browser.newPage();
 
