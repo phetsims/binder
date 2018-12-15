@@ -19,5 +19,8 @@
     "marked": "0.3.19",
     "puppeteer": "1.4.0"
   },
-  "phet": {}
+  "phet": {},
+  "eslintConfig": {
+    "extends": "../chipper/eslint/node_eslintrc.js"
+  }
 }
