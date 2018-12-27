@@ -5,7 +5,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-/* eslint-env node */
 'use strict';
 
 // modules

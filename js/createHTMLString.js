@@ -5,7 +5,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-/* eslint-env node */
 'use strict';
 
 // const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
