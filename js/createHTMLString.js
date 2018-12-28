@@ -120,7 +120,7 @@ const createHTMLString = function( data ) {
   }
 
   return baseTemplate( { content: contentHTML, parents: parentComponents.map( p => {
-    var retObj = p.data;
+    const retObj = p.data;
     retObj.repo = p.repo;
     return retObj;
   } ) } );
