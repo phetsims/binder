@@ -101,10 +101,10 @@ const createHTMLString = function( data ) {
         let markdown = mdData[ component ] ? mdData[ component ].content : `<p>No markdown content for ${component} yet.</p>`;
         markdown = new handlebars.SafeString( markdown );
         const componentContext = {
-          component,
-          sims,
-          simCount,
-          markdown,
+          component: component,
+          sims: sims,
+          simCount: simCount,
+          markdown: markdown,
           repo: parent.repo
         };
 
