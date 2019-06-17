@@ -20,6 +20,7 @@
 'use strict';
 
 // modules
+const assert = require( 'assert' );
 const buildLocal = require( __dirname + '/../../perennial/js/common/buildLocal' );
 const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
@@ -29,7 +30,8 @@ const getSims = function() {
   return fs.readFileSync( __dirname + '/../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
 
-const baseURL = buildLocal.localhostURL; // localhostURL should include the port number if present
+const baseURL = buildLocal.localTestingURL; // localTestingURL should include the port number if present
+assert( baseURL.endsWith( '/' ), 'path should end with a slash' );
 
 module.exports = async ( commandLineSims ) => {
   const browser = await puppeteer.launch();
@@ -66,7 +68,7 @@ module.exports = async ( commandLineSims ) => {
     } );
 
     // navigate to the sim page
-    const url = `${baseURL}/${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
+    const url = `${baseURL}${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
     console.log( '\nloading: ' + sim );
     await page.goto( url );
 
@@ -92,6 +94,7 @@ module.exports = async ( commandLineSims ) => {
               }
             }
             catch( e ) {
+
               // message isn't what we wanted it to be, so ignore it
               console.log( 'CAUGHT ERROR:', e.message );
             }

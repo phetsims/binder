@@ -1,4 +1,4 @@
-# binder
+ # binder
 
 See [https://phetsims.github.io/binder/](https://phetsims.github.io/binder/) for public up to date documentation and style guide on PhET sim
 components.
@@ -9,9 +9,9 @@ Generates and publishes documentation for PhET simulation components. Included c
 
 During the generation outlined below, we make use of a local server running the sims. If it's not running or not present in your `build-local.json` configuration file, it will fail. It references the following keys:
 
-```js
+```json
 {
-  "localhostURL": "https://someUrl..."  // REQUIRED with asserts
+  "localTestingURL": "https://someUrl..."
 }
 ```
 Port numbers should be included in the URL string.
