@@ -122,7 +122,6 @@ const createHTMLString = function( data ) {
     } );
   }
 
-  console.log('called')
   contentHTML += componentsBySimulationTemplate( { sims: sims } );
 
   return baseTemplate( {
