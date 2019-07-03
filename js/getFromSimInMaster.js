@@ -20,6 +20,7 @@
 'use strict';
 
 // modules
+const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
 const buildLocal = require( __dirname + '/../../perennial/js/common/buildLocal' );
 const fs = require( 'fs' );
@@ -36,7 +37,8 @@ assert( baseURL.endsWith( '/' ), 'path should end with a slash' );
 module.exports = async ( commandLineSims ) => {
   const browser = await puppeteer.launch();
 
-  const data = {};
+  const dataByComponent = {};
+  const dataBySim = {};
 
   // override to generate based on only sims provided
   const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
@@ -47,13 +49,28 @@ module.exports = async ( commandLineSims ) => {
     const page = await browser.newPage();
 
     await page.exposeFunction( 'updateComponentData', ( simName, dataMap ) => {
+      assert( !dataBySim[ sim ], 'sim already exists?' );
+
+      dataBySim[ sim ] = {};
+      const simObject = dataBySim[ sim ];
+      simObject.name = sim;
+      simObject.components = [];
+
       for ( const component in dataMap ) {
+        if ( dataMap.hasOwnProperty( component ) ) {
 
-        if ( !data[ component ] ) {
-          data[ component ] = {};
+
+          if ( !dataByComponent[ component ] ) {
+            dataByComponent[ component ] = {};
+          }
+
+          dataByComponent[ component ][ simName ] = dataMap[ component ];
+
+
+          // fill in simulation based data
+          simObject.components.push( component );
+          simObject.components = _.uniq( simObject.components );
         }
-
-        data[ component ][ simName ] = dataMap[ component ];
       }
     } );
 
@@ -114,11 +131,15 @@ module.exports = async ( commandLineSims ) => {
 
   browser.close();
 
+  const outputObject = {
+    components: dataByComponent,
+    sims: dataBySim
+  };
+
   // TODO: is this the best place for this?
   // write data to a file so that we don't have to run this so often for quick iteration.
-  fs.writeFileSync( __dirname + '/../binderjson.json', JSON.stringify( data, null, 2 ) );
+  fs.writeFileSync( __dirname + '/../binderjson.json', JSON.stringify( outputObject, null, 2 ) );
 
   // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level.
-  return data;
-
+  return outputObject;
 };

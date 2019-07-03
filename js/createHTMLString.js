@@ -15,7 +15,7 @@ const matter = require( 'gray-matter' ); // eslint-disable-line
 const path = require( 'path' );
 
 // const apiUrl = '';
-const simsDirectory = path.normalize(__dirname + '/../..');
+const simsDirectory = path.normalize( __dirname + '/../..' );
 
 // returns an object with the 'data' and 'content' keys
 function processFile( filePath ) {
@@ -25,7 +25,7 @@ function processFile( filePath ) {
   const pathArray = filePath.split( path.sep );
   const docIdx = pathArray.indexOf( 'doc' );
   const repo = pathArray[ docIdx - 1 ];
-  mdObject.content  = marked( mdObject.content ).split( '<img src="images/' ).join( '<img src="images/' + repo + '/' );
+  mdObject.content = marked( mdObject.content ).split( '<img src="images/' ).join( '<img src="images/' + repo + '/' );
   mdObject.repo = repo;
   return mdObject;
 }
@@ -40,8 +40,8 @@ function getFilePathsFromDir( dir, filelist = [] ) {
   if ( !( dir.includes( 'templates' ) || dir.includes( 'images' ) ) ) {
     fs.readdirSync( dir ).forEach( file => {
       filelist = fs.statSync( path.join( dir, file ) ).isDirectory()
-        ? getFilePathsFromDir( path.join( dir, file ), filelist )
-        : filelist.concat( path.join( dir, file ) );
+                 ? getFilePathsFromDir( path.join( dir, file ), filelist )
+                 : filelist.concat( path.join( dir, file ) );
     } );
   }
   return filelist;
@@ -53,7 +53,7 @@ function flatten( arr ) {
 }
 
 // compile and get the given template file
-function getHandlebarsTemplate ( filename ) {
+function getHandlebarsTemplate( filename ) {
   const fullPath = path.normalize( __dirname + '/../templates/' + filename );
   return handlebars.compile( fs.readFileSync( fullPath, 'utf8' ) );
 }
@@ -65,14 +65,17 @@ function getHandlebarsTemplate ( filename ) {
  * @returns {string} - the HTML
  */
 const createHTMLString = function( data ) {
+  const components = data.components;
+  const sims = data.sims;
 
   const baseTemplate = getHandlebarsTemplate( 'base.html' );
   const parentComponentTemplate = getHandlebarsTemplate( 'parentComponent.html' );
   const singleComponentTemplate = getHandlebarsTemplate( 'singleComponent.html' );
+  const componentsBySimulationTemplate = getHandlebarsTemplate( 'componentsBySimulation.html' );
   let contentHTML = '';
 
   // get list of files in all doc/ directories, excluding binder (can be async)
-  const repos = new Set( Object.keys( data ).map( item => item.split( '/' )[0] ) );
+  const repos = new Set( Object.keys( components ).map( item => item.split( '/' )[ 0 ] ) );
   const documentPaths = flatten( [ ...repos ].map( getFullDocPaths ) );
 
   const mdData = {};
@@ -84,46 +87,51 @@ const createHTMLString = function( data ) {
   const parentComponents = Object.values( mdData ).filter( component => component.data.parent );
   // loop over each parent component
   for ( const parent of parentComponents ) {
-      let componentsHTML = '';
+    let componentsHTML = '';
 
-      for ( const component of parent.data.components ) {
-        const repoComponent = `${parent.repo}/${component}`;
-        const simObject = data[ repoComponent ];
-        const simCount = simObject ? Object.keys( simObject ).length : 0;
-        const sims = simObject ?
-               Object.keys( simObject ).map( simName => {
-                 return {
-                   name: simName,
-                   images: simObject[ simName ]
-                 };
-               } ) : [];
-        
-        let markdown = mdData[ component ] ? mdData[ component ].content : `<p>No markdown content for ${component} yet.</p>`;
-        markdown = new handlebars.SafeString( markdown );
-        const componentContext = {
-          component: component,
-          sims: sims,
-          simCount: simCount,
-          markdown: markdown,
-          repo: parent.repo
-        };
+    for ( const component of parent.data.components ) {
+      const repoComponent = `${parent.repo}/${component}`;
+      const simObject = components[ repoComponent ];
+      const simCount = simObject ? Object.keys( simObject ).length : 0;
+      const sims = simObject ?
+                   Object.keys( simObject ).map( simName => {
+                     return {
+                       name: simName,
+                       images: simObject[ simName ]
+                     };
+                   } ) : [];
 
-        componentsHTML += singleComponentTemplate( componentContext );
-      }
+      let markdown = mdData[ component ] ? mdData[ component ].content : `<p>No markdown content for ${component} yet.</p>`;
+      markdown = new handlebars.SafeString( markdown );
+      const componentContext = {
+        component: component,
+        sims: sims,
+        simCount: simCount,
+        markdown: markdown,
+        repo: parent.repo
+      };
 
-      contentHTML += parentComponentTemplate( {
-        content: new handlebars.SafeString( parent.content ),
-        title: parent.data.title,
-        id: parent.data.category,
-        componentsHTML: new handlebars.SafeString( componentsHTML )
-      } );
+      componentsHTML += singleComponentTemplate( componentContext );
+    }
+
+    contentHTML += parentComponentTemplate( {
+      content: new handlebars.SafeString( parent.content ),
+      title: parent.data.title,
+      id: parent.data.category,
+      componentsHTML: new handlebars.SafeString( componentsHTML )
+    } );
   }
 
-  return baseTemplate( { content: contentHTML, parents: parentComponents.map( p => {
-    const retObj = p.data;
-    retObj.repo = p.repo;
-    return retObj;
-  } ) } );
+  console.log('called')
+  contentHTML += componentsBySimulationTemplate( { sims: sims } );
+
+  return baseTemplate( {
+    content: contentHTML, parents: parentComponents.map( p => {
+      const retObj = p.data;
+      retObj.repo = p.repo;
+      return retObj;
+    } )
+  } );
 };
 
 // handlebars helper functions
@@ -139,8 +147,9 @@ handlebars.registerHelper( 'simPageLink', ( simName ) => {
   );
 } );
 
-handlebars.registerHelper( 'navList', (components, repo) => {
-  const itemsHTML = components.map( c => `<li><a href="#${repo}-${c}">${c}</a></li>` ).join('\n');
+handlebars.registerHelper( 'navList', ( components, repo ) => {
+  let itemsHTML = components.map( c => `<li><a href="#${repo}-${c}">${c}</a></li>` ).join( '\n' );
+  itemsHTML += '<li><a href="#sims">Sorted By Simulation</a></li>';
   return '<ul class="nav bd-sidenav">' + itemsHTML + '</ul>';
 } );
 
