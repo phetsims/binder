@@ -68,10 +68,16 @@ const createHTMLString = function( data ) {
   const components = data.components;
   const sims = data.sims;
 
+  // organize the data for the "sims by component" view
+  const simsByComponent = Object.keys( components ).map( component => {
+    return { name: component, sims: Object.keys( components[ component ] ) };
+  } );
+
   const baseTemplate = getHandlebarsTemplate( 'base.html' );
   const parentComponentTemplate = getHandlebarsTemplate( 'parentComponent.html' );
   const singleComponentTemplate = getHandlebarsTemplate( 'singleComponent.html' );
   const componentsBySimulationTemplate = getHandlebarsTemplate( 'componentsBySimulation.html' );
+  const simsByComponentTemplate = getHandlebarsTemplate( 'simsByComponent.html' );
   let contentHTML = '';
 
   // get list of files in all doc/ directories, excluding binder (can be async)
@@ -123,6 +129,8 @@ const createHTMLString = function( data ) {
   }
 
   contentHTML += componentsBySimulationTemplate( { sims: sims } );
+
+  contentHTML += simsByComponentTemplate( { components: simsByComponent } );
 
   return baseTemplate( {
     content: contentHTML, parents: parentComponents.map( p => {
