@@ -37,7 +37,7 @@ function getFullDocPaths( repo ) {
 }
 
 function getFilePathsFromDir( dir, filelist = [] ) {
-  if ( !( dir.includes( 'templates' ) || dir.includes( 'images' ) ) ) {
+  if ( !( dir.includes( 'templates' ) || dir.includes( 'images' ) ) && fs.existsSync( dir ) ) {
     fs.readdirSync( dir ).forEach( file => {
       filelist = fs.statSync( path.join( dir, file ) ).isDirectory()
                  ? getFilePathsFromDir( path.join( dir, file ), filelist )
