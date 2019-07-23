@@ -12,6 +12,7 @@
     "test-local-server": "node js/serverTest.js"
   },
   "devDependencies": {
+    "eslint-plugin-react": "^7.14.3",
     "fs-extra": "6.0.1",
     "gray-matter": "^4.0.1",
     "grunt": "~1.0.0",
@@ -21,6 +22,17 @@
   },
   "phet": {},
   "eslintConfig": {
-    "extends": "../chipper/eslint/node_eslintrc.js"
+    "extends": "plugin:react/recommended",
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "settings": {
+      "react": {
+        "version": "^16.8.6"
+      }
+    }
   }
 }
