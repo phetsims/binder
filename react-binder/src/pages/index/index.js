@@ -8,7 +8,7 @@
 
 // imports
 import React from 'react';
-import './index.less';
+import './index.css';
 
 export default class IndexPage extends React.Component {
   constructor( props ) {
