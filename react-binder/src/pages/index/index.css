@@ -5,7 +5,6 @@
 
   --light-eggplant: #f4f2f9;
   --gray: #6c6c6c;
-  --gray-light: #e0e0e0;
   --pink: #e01e5a;
 
   --short-transition: 0.3s ease;
@@ -93,6 +92,4 @@ button.nav-button.selected {
   position: absolute;
   left: var(--side-nav-width);
   top: 0;
-  overflow-y: scroll;
-  padding-left: 30px;
 }

@@ -8,6 +8,7 @@
 
 // imports
 import React from 'react';
+import Panel from './panel';
 import './common.css';
 
 export default class SimsByComponent extends React.Component {
@@ -16,7 +17,8 @@ export default class SimsByComponent extends React.Component {
 
     this.state = {
       // eslint-disable-next-line react/prop-types
-      components: props.components
+      components: props.components,
+      simsPanel: null
     };
   }
 
@@ -25,24 +27,36 @@ export default class SimsByComponent extends React.Component {
     const componentList = [];
 
     components.forEach( component => {
-      const componentName = <h3>{component.name}</h3>;
-
-      const sims = component.sims;
-      const simList = [];
-
-      sims.forEach( sim => {
-        const simName = <p>{sim}</p>;
-        simList.push( simName );
-      } );
+      const componentName = <button className='link-button' onClick={() => this.loadSimsForComponent( component.name )}>
+        {component.name}
+      </button>;
 
       componentList.push( componentName );
-      componentList.push( simList );
     } );
 
     return componentList;
   }
 
+  loadSimsForComponent( componentName ) {
+    const components = this.state.components;
+
+    components.forEach( component => {
+      if ( component.name === componentName ) {
+        this.setState( {
+          simsPanel: <Panel title={componentName} elements={component.sims}/>
+        } );
+      }
+    } );
+  }
+
   render() {
-    return ( this.createComponentList() );
+    return (
+      <div className='page'>
+        <div className='list'>
+          {this.createComponentList()}
+        </div>
+        {this.state.simsPanel}
+      </div>
+    );
   }
 }
