@@ -9,6 +9,7 @@
 // imports
 import React from 'react';
 import './index.css';
+import ComponentsBySim from '../componentsBySim/componentsBySim';
 
 export default class IndexPage extends React.Component {
   constructor( props ) {
@@ -16,10 +17,19 @@ export default class IndexPage extends React.Component {
 
     this.state = {
       selectedButtonId: 'simsByComponent',
-      selectedPage: <h1>sims page</h1>,
-      simsByComponent: <h1>sims page</h1>,
-      componentsBySim: <h1>components page</h1>
+      selectedPage: <h1>components page</h1>,
+      simsByComponent: <h1>components page</h1>,
+      componentsBySim: <h1>sims page</h1>
     };
+
+    fetch( '/binderjson.json' )
+      .then( response => response.json() )
+      .then( data => {
+        this.setState( {
+          simsByComponent: <h1>components</h1>,
+          componentsBySim: <ComponentsBySim sims={data.sims} />
+        } );
+      } );
   }
 
   selectClass( buttonId ) {
