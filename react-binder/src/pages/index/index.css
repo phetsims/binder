@@ -80,9 +80,11 @@ button.nav-button:focus {
 }
 
 button.nav-button.selected {
+  color: var(--pink);
   background: white;
   border-color: var(--gray-light);
   border-right: none;
+  transition: var(--short-transition);
 }
 
 #selected-page {
@@ -91,4 +93,6 @@ button.nav-button.selected {
   position: absolute;
   left: var(--side-nav-width);
   top: 0;
+  overflow-y: scroll;
+  padding-left: 30px;
 }

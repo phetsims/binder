@@ -9,17 +9,37 @@
 // imports
 import React from 'react';
 import './index.css';
+import ComponentsBySim from '../componentsBySim';
+import SimsByComponent from '../simsByComponent';
 
 export default class IndexPage extends React.Component {
   constructor( props ) {
     super( props );
 
     this.state = {
-      selectedButtonId: 'simsByComponent',
-      selectedPage: <h1>sims page</h1>,
-      simsByComponent: <h1>sims page</h1>,
-      componentsBySim: <h1>components page</h1>
+      selectedButtonId: null,
+      selectedPage: null
     };
+
+    fetch( '/binderjson.json' )
+      .then( response => response.json() )
+      .then( data => {
+        const components = data.components;
+        const sims = data.sims;
+
+        // organize the data for the "sims by component" view
+        const simsByComponent = Object.keys( components ).map( component => {
+          return { name: component, sims: Object.keys( components[ component ] ) };
+        } );
+
+        this.setState( {
+          simsByComponent: <SimsByComponent components={simsByComponent}/>,
+          componentsBySim: <ComponentsBySim sims={sims} />
+        } );
+
+        const firstButtonToSelect = this.state.selectedButtonId || 'simsByComponent';
+        this.selectPage( firstButtonToSelect );
+      } );
   }
 
   selectClass( buttonId ) {
