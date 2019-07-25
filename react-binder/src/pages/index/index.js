@@ -21,7 +21,7 @@ export default class IndexPage extends React.Component {
       selectedPage: null
     };
 
-    fetch( '/binderjson.json' )
+    fetch( process.env.PUBLIC_URL + '/binderjson.json' )
       .then( response => response.json() )
       .then( data => {
         const components = data.components;
@@ -68,7 +68,7 @@ export default class IndexPage extends React.Component {
         <div id='side-nav'>
 
           <div className='title-container'>
-            <img src='/img/phet.png' className='title-image' alt='PhET'/>
+            <img src={process.env.PUBLIC_URL + '/img/phet.png'} className='title-image' alt='PhET'/>
             <h1 className='title-text'>Binder</h1>
           </div>
 
