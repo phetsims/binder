@@ -9,6 +9,7 @@
 // imports
 import React from 'react';
 import './common.css';
+import Panel from "./panel";
 
 export default class ComponentsBySim extends React.Component {
   constructor( props ) {
@@ -26,24 +27,37 @@ export default class ComponentsBySim extends React.Component {
 
     for ( const key in sims ) {
       const sim = sims[ key ];
-      const simName = <h3>{sim.name}</h3>;
-
-      const components = sim.components;
-      const componentList = [];
-
-      components.forEach( component => {
-        const componentName = <p>{component}</p>;
-        componentList.push( componentName );
-      } );
+      const simName = <button className='link-button' onClick={() => this.loadComponentsForSim( sim.name )}>
+        {sim.name}
+      </button>;
 
       simList.push( simName );
-      simList.push( componentList );
     }
 
     return simList;
   }
 
+  loadComponentsForSim( simName ) {
+    const sims = this.state.sims;
+
+    for ( const key in sims ) {
+      const sim = sims[ key ];
+      if ( sim.name === simName ) {
+        this.setState( {
+          simsPanel: <Panel title={simName} elements={sim.components}/>
+        } );
+      }
+    }
+  }
+
   render() {
-    return ( this.createSimList() );
+    return (
+      <div className='page'>
+        <div className='list'>
+          {this.createSimList()}
+        </div>
+        {this.state.simsPanel}
+      </div>
+    );
   }
 }
