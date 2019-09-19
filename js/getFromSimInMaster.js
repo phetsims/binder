@@ -34,7 +34,7 @@ const getSims = function() {
 const baseURL = buildLocal.localTestingURL; // localTestingURL should include the port number if present
 assert( baseURL.endsWith( '/' ), 'path should end with a slash' );
 
-module.exports = async ( commandLineSims ) => {
+module.exports = async commandLineSims => {
   const browser = await puppeteer.launch();
 
   const dataByComponent = {};
@@ -91,7 +91,7 @@ module.exports = async ( commandLineSims ) => {
 
     // Add a listener such that when the sim posts a message saying that it has loaded,
     // get the InstanceRegistry's mapping of components for this sim
-    await page.evaluate( ( sim ) => {
+    await page.evaluate( sim => {
       return new Promise( function( resolve, reject ) {
         window.addEventListener( 'message', function( event ) {
           if ( event.data ) {

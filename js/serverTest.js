@@ -8,7 +8,7 @@ const http = require( 'http' );
 
 const url = buildLocal.localTestingURL;
 
-http.get( url, ( res ) => {
+http.get( url, res => {
     assert( res.statusCode === 200, `ERROR: Bad response from ${url}` );
     console.log( 'SUCCESS:', 'Server properly configured.');
 } );

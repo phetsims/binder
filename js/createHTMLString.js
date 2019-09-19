@@ -148,7 +148,7 @@ handlebars.registerHelper( 'componentLink', ( repo, component ) => {
   );
 } );
 
-handlebars.registerHelper( 'simPageLink', ( simName ) => {
+handlebars.registerHelper( 'simPageLink', simName => {
   return new handlebars.SafeString(
     `<a href="https://phet.colorado.edu/en/simulation/${simName}" target="_blank">PhET Simulation Page</a>`
   );
