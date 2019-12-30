@@ -136,10 +136,10 @@ module.exports = async commandLineSims => {
     sims: dataBySim
   };
 
-  // TODO: is this the best place for this?
+  // TODO: is this the best place for this? see https://github.com/phetsims/binder/issues/28
   // write data to a file so that we don't have to run this so often for quick iteration.
   fs.writeFileSync( __dirname + '/../binderjson.json', JSON.stringify( outputObject, null, 2 ) );
 
-  // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level.
+  // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level. see https://github.com/phetsims/binder/issues/28
   return outputObject;
 };
