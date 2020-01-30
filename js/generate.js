@@ -16,7 +16,7 @@ const getFromSimInMaster = require( './getFromSimInMaster' );
 // resolve image and doc paths as constants
 
 // constants
-const OUTPUT_FILE = __dirname + '/../doc/index.html';
+const OUTPUT_FILE = __dirname + '/../docs/index.html';
 
 const myArgs = process.argv.slice( 2 );
 
@@ -28,8 +28,8 @@ console.log( 'streaming to ' + OUTPUT_FILE );
 try {
 
   // TODO: this assumes we only need image from two repos, see https://github.com/phetsims/binder/issues/28
-  fsExtra.copySync( __dirname + '/../../sun/doc/images', __dirname + '/../doc/images/sun' );
-  fsExtra.copySync( __dirname + '/../../scenery-phet/images', __dirname + '/../doc/images/scenery-phet' );
+  fsExtra.copySync( __dirname + '/../../sun/docs/images', __dirname + '/../docs/images/sun' );
+  fsExtra.copySync( __dirname + '/../../scenery-phet/images', __dirname + '/../docs/images/scenery-phet' );
 }
 catch( err ) {
   console.error( err );

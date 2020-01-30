@@ -80,7 +80,7 @@ const createHTMLString = function( data ) {
   const simsByComponentTemplate = getHandlebarsTemplate( 'simsByComponent.html' );
   let contentHTML = '';
 
-  // get list of files in all doc/ directories, excluding binder (can be async)
+  // get list of files in all docs/ directories, excluding binder (can be async)
   const repos = new Set( Object.keys( components ).map( item => item.split( '/' )[ 0 ] ) );
   const documentPaths = flatten( [ ...repos ].map( getFullDocPaths ) );
 
