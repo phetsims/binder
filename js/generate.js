@@ -28,7 +28,7 @@ console.log( 'streaming to ' + OUTPUT_FILE );
 try {
 
   // TODO: this assumes we only need image from two repos, see https://github.com/phetsims/binder/issues/28
-  fsExtra.copySync( __dirname + '/../../sun/docs/images', __dirname + '/../docs/images/sun' );
+  fsExtra.copySync( __dirname + '/../../sun/doc/images', __dirname + '/../docs/images/sun' );
   fsExtra.copySync( __dirname + '/../../scenery-phet/images', __dirname + '/../docs/images/scenery-phet' );
 }
 catch( err ) {
