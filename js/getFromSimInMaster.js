@@ -92,8 +92,8 @@ module.exports = async commandLineSims => {
     // Add a listener such that when the sim posts a message saying that it has loaded,
     // get the InstanceRegistry's mapping of components for this sim
     await page.evaluate( sim => {
-      return new Promise( function( resolve, reject ) {
-        window.addEventListener( 'message', function( event ) {
+      return new Promise( ( resolve, reject ) => {
+        window.addEventListener( 'message', event => {
           if ( event.data ) {
             try {
               const messageData = JSON.parse( event.data );
@@ -120,7 +120,7 @@ module.exports = async commandLineSims => {
             console.log( 'no data on message event' );
           }
         } );
-        setTimeout( function() {
+        setTimeout( () => {
           console.log( 'sim load timeout, moving on' );
           resolve( undefined );
         }, 20000 );
