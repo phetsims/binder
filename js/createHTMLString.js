@@ -15,7 +15,7 @@ const matter = require( 'gray-matter' ); // eslint-disable-line
 const path = require( 'path' );
 
 // const apiUrl = '';
-const simsDirectory = path.normalize( __dirname + '/../..' );
+const simsDirectory = path.normalize( `${__dirname}/../..` );
 
 // returns an object with the 'data' and 'content' keys
 function processFile( filePath ) {
@@ -25,7 +25,7 @@ function processFile( filePath ) {
   const pathArray = filePath.split( path.sep );
   const docIdx = pathArray.indexOf( 'doc' );
   const repo = pathArray[ docIdx - 1 ];
-  mdObject.content = marked( mdObject.content ).split( '<img src="images/' ).join( '<img src="images/' + repo + '/' );
+  mdObject.content = marked( mdObject.content ).split( '<img src="images/' ).join( `<img src="images/${repo}/` );
   mdObject.repo = repo;
   return mdObject;
 }
@@ -54,7 +54,7 @@ function flatten( arr ) {
 
 // compile and get the given template file
 function getHandlebarsTemplate( filename ) {
-  const fullPath = path.normalize( __dirname + '/../templates/' + filename );
+  const fullPath = path.normalize( `${__dirname}/../templates/${filename}` );
   return handlebars.compile( fs.readFileSync( fullPath, 'utf8' ) );
 }
 
@@ -157,7 +157,7 @@ handlebars.registerHelper( 'simPageLink', simName => {
 handlebars.registerHelper( 'navList', ( components, repo ) => {
   let itemsHTML = components.map( c => `<li><a href="#${repo}-${c}">${c}</a></li>` ).join( '\n' );
   itemsHTML += '<li><a href="#sims">Sorted By Simulation</a></li>';
-  return '<ul class="nav bd-sidenav">' + itemsHTML + '</ul>';
+  return `<ul class="nav bd-sidenav">${itemsHTML}</ul>`;
 } );
 
 /**

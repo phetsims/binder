@@ -21,12 +21,12 @@ module.exports = function( repo, component ) {
 
   let markdown = '';
   try {
-    const m = fs.readFileSync( __dirname + `/../../${repo}/docs/${component}.md` );
+    const m = fs.readFileSync( `${__dirname}/../../${repo}/docs/${component}.md` );
     markdown = marked( m.toString() );
 
     // Use subdirectory for images, so that different directories can have images of the same name
     // TODO: This may yield false positives, say if code examples have this same term, see https://github.com/phetsims/binder/issues/28
-    markdown = markdown.split( '<img src="images/' ).join( '<img src="images/' + repo + '/' );
+    markdown = markdown.split( '<img src="images/' ).join( `<img src="images/${repo}/` );
   }
   catch( e ) {
     markdown = marked( '# TODO: *documentation*' );

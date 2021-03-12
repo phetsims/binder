@@ -22,13 +22,13 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
-const buildLocal = require( __dirname + '/../../perennial/js/common/buildLocal' );
+const buildLocal = require( `${__dirname}/../../perennial/js/common/buildLocal` );
 const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
 
 // Helper function to get the sim list from perennial
 const getSims = function() {
-  return fs.readFileSync( __dirname + '/../../perennial/data/active-sims' ).toString().trim().split( '\n' ).map( sim => sim.trim() );
+  return fs.readFileSync( `${__dirname}/../../perennial/data/active-sims` ).toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
 
 const baseURL = buildLocal.localTestingURL; // localTestingURL should include the port number if present
@@ -86,7 +86,7 @@ module.exports = async commandLineSims => {
 
     // navigate to the sim page
     const url = `${baseURL}${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
-    console.log( '\nloading: ' + sim );
+    console.log( `\nloading: ${sim}` );
     await page.goto( url );
 
     // Add a listener such that when the sim posts a message saying that it has loaded,
@@ -138,7 +138,7 @@ module.exports = async commandLineSims => {
 
   // TODO: is this the best place for this? see https://github.com/phetsims/binder/issues/28
   // write data to a file so that we don't have to run this so often for quick iteration.
-  fs.writeFileSync( __dirname + '/../binderjson.json', JSON.stringify( outputObject, null, 2 ) );
+  fs.writeFileSync( `${__dirname}/../binderjson.json`, JSON.stringify( outputObject, null, 2 ) );
 
   // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level. see https://github.com/phetsims/binder/issues/28
   return outputObject;
