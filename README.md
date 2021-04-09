@@ -34,7 +34,7 @@ into a file of your choosing.
 
 We render markdown and insert it into `index.html` with the `handlebars` library. These templates can be found in the `templates/` directory.
 
-For more information see https://github.com/phetsims/binder/ or contact @mbarlow12.
+For more information see https://github.com/phetsims/binder/ or contact @zepumph.
 
 ## output
 
