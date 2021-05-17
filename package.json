@@ -14,7 +14,7 @@
   "devDependencies": {
     "fs-extra": "6.0.1",
     "gray-matter": "^4.0.1",
-    "grunt": "~1.1.0",
+    "grunt": "~1.4.0",
     "handlebars": "^4.0.11",
     "marked": "0.3.19",
     "puppeteer": "~2.1.1"
