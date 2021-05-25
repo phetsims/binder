@@ -1,4 +1,4 @@
-// Copyright 2018-2020, University of Colorado Boulder
+// Copyright 2018-2021, University of Colorado Boulder
 
 /**
  * Get the hand written markdown file for a component. Return the converted HTML from the markdown converted by "marked"
