@@ -1,4 +1,4 @@
-// Copyright 2018-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Runs all sims to get runtime information. Return the data object based on the sims run in master.

@@ -1,4 +1,4 @@
-// Copyright 2018-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Get the hand written markdown file for a component. Return the converted HTML from the markdown converted by "marked"
