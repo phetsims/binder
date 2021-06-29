@@ -1,6 +1,5 @@
 // Copyright 2018-2021, University of Colorado Boulder
 
-'use strict';
 
 const assert = require( 'assert' );
 const buildLocal = require( '../../perennial/js/common/buildLocal' );

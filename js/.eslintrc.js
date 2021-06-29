@@ -1,7 +1,6 @@
 // Copyright 2019-2021, University of Colorado Boulder
 // @author Chris Klusendorf
 
-'use strict';
 
 module.exports = {
 

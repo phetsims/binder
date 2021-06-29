@@ -5,7 +5,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
 const fs = require( 'fs' );

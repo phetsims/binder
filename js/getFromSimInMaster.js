@@ -17,7 +17,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line

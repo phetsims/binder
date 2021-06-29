@@ -6,7 +6,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-'use strict';
 
 const createHTMLString = require( './createHTMLString' );
 const fs = require( 'fs' );
