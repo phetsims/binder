@@ -21,124 +21,135 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
-const buildLocal = require( `${__dirname}/../../perennial/js/common/buildLocal` );
 const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
+const withServer = require( '../../perennial/js/common/withServer' );
 
 // Helper function to get the sim list from perennial
 const getSims = function() {
   return fs.readFileSync( `${__dirname}/../../perennial/data/active-sims` ).toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
 
-const baseURL = buildLocal.localTestingURL; // localTestingURL should include the port number if present
-assert( baseURL.endsWith( '/' ), 'path should end with a slash' );
-
 module.exports = async commandLineSims => {
-  const browser = await puppeteer.launch();
 
-  const dataByComponent = {};
-  const dataBySim = {};
+  return withServer( async port => {
 
-  // override to generate based on only sims provided
-  const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
-  console.log( 'sims to load:', sims.join( ', ' ) );
+    const baseURL = `http://localhost:${port}/`;
+    const browser = await puppeteer.launch();
 
-  for ( const sim of sims ) {
+    const dataByComponent = {};
+    const dataBySim = {};
 
-    const page = await browser.newPage();
+    // override to generate based on only sims provided
+    const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
+    console.log( 'sims to load:', sims.join( ', ' ) );
 
-    await page.exposeFunction( 'updateComponentData', ( simName, dataMap ) => {
-      assert( !dataBySim[ sim ], 'sim already exists?' );
+    for ( const sim of sims ) {
 
-      dataBySim[ sim ] = {};
-      const simObject = dataBySim[ sim ];
-      simObject.name = sim;
-      simObject.components = [];
+      const page = await browser.newPage();
 
-      for ( const component in dataMap ) {
-        if ( dataMap.hasOwnProperty( component ) ) {
+      await page.exposeFunction( 'updateComponentData', ( simName, dataMap ) => {
+        assert( !dataBySim[ sim ], 'sim already exists?' );
+
+        dataBySim[ sim ] = {};
+        const simObject = dataBySim[ sim ];
+        simObject.name = sim;
+        simObject.components = [];
+
+        for ( const component in dataMap ) {
+          if ( dataMap.hasOwnProperty( component ) ) {
 
 
-          if ( !dataByComponent[ component ] ) {
-            dataByComponent[ component ] = {};
+            if ( !dataByComponent[ component ] ) {
+              dataByComponent[ component ] = {};
+            }
+
+            dataByComponent[ component ][ simName ] = dataMap[ component ];
+
+
+            // fill in simulation based data
+            simObject.components.push( component );
+            simObject.components = _.uniq( simObject.components );
           }
-
-          dataByComponent[ component ][ simName ] = dataMap[ component ];
-
-
-          // fill in simulation based data
-          simObject.components.push( component );
-          simObject.components = _.uniq( simObject.components );
         }
-      }
-    } );
+      } );
 
-    // log to our server from the browser
-    page.on( 'console', msg => {
-      if ( msg.type() === 'error' ) {
-        console.error( `${sim} PAGE ERROR:`, msg.text() );
-      }
-      else {
-        console.log( `${sim} PAGE LOG:`, msg.text() );
-      }
-    } );
+      // log to our server from the browser
+      page.on( 'console', msg => {
+        if ( msg.type() === 'error' ) {
+          console.error( `${sim} PAGE ERROR:`, msg.text() );
+        }
+        else {
+          console.log( `${sim} PAGE LOG:`, msg.text() );
+        }
+      } );
 
-    // navigate to the sim page
-    const url = `${baseURL}${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
-    console.log( `\nloading: ${sim}` );
-    await page.goto( url );
+      page.on( 'error', error => {
+        console.error( 'PAGE ERROR:', error );
+      } );
+      page.on( 'pageerror', error => {
+        console.error( 'PAGE ERROR:', error );
+      } );
 
-    // Add a listener such that when the sim posts a message saying that it has loaded,
-    // get the InstanceRegistry's mapping of components for this sim
-    await page.evaluate( sim => {
-      return new Promise( ( resolve, reject ) => {
-        window.addEventListener( 'message', event => {
-          if ( event.data ) {
-            try {
-              const messageData = JSON.parse( event.data );
-              if ( messageData.type === 'load' ) {
-                console.log( 'loaded', sim );
+      // navigate to the sim page
+      const url = `${baseURL}${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
+      console.log( `\nloading: ${sim}` );
+      await page.goto( url );
 
-                if ( phet.phetCore.InstanceRegistry ) {
-                  window.updateComponentData( sim, phet.phetCore.InstanceRegistry.map );
-                  resolve();
-                }
-                else {
-                  console.error( 'InstanceRegistry not defined. This normally means no components are in this sim.' );
-                  resolve( undefined );
+      // Add a listener such that when the sim posts a message saying that it has loaded,
+      // get the InstanceRegistry's mapping of components for this sim
+      await page.evaluate( sim => {
+        return new Promise( ( resolve, reject ) => {
+
+          window.addEventListener( 'message', event => {
+            if ( event.data ) {
+              try {
+                const messageData = JSON.parse( event.data );
+                if ( messageData.type === 'load' ) {
+                  console.log( 'loaded', sim );
+
+                  if ( phet.phetCore.InstanceRegistry ) {
+                    window.updateComponentData( sim, phet.phetCore.InstanceRegistry.map );
+                    resolve();
+                  }
+                  else {
+                    console.error( 'InstanceRegistry not defined. This normally means no components are in this sim.' );
+                    resolve( undefined );
+                  }
                 }
               }
-            }
-            catch( e ) {
+              catch( e ) {
 
-              // message isn't what we wanted it to be, so ignore it
-              console.log( 'CAUGHT ERROR:', e.message );
+                // message isn't what we wanted it to be, so ignore it
+                console.log( 'CAUGHT ERROR:', e.message );
+              }
             }
-          }
-          else {
-            console.log( 'no data on message event' );
-          }
+            else {
+              console.log( 'no data on message event' );
+            }
+          } );
+
+          setTimeout( () => {
+            console.log( 'sim load timeout, moving on' );
+            resolve( undefined );
+          }, 20000 );
         } );
-        setTimeout( () => {
-          console.log( 'sim load timeout, moving on' );
-          resolve( undefined );
-        }, 20000 );
-      } );
-    }, sim );
-    await page.close();
-  }
+      }, sim );
+      await page.close();
+    }
 
-  browser.close();
+    browser.close();
 
-  const outputObject = {
-    components: dataByComponent,
-    sims: dataBySim
-  };
+    const outputObject = {
+      components: dataByComponent,
+      sims: dataBySim
+    };
 
-  // TODO: is this the best place for this? see https://github.com/phetsims/binder/issues/28
-  // write data to a file so that we don't have to run this so often for quick iteration.
-  fs.writeFileSync( `${__dirname}/../binderjson.json`, JSON.stringify( outputObject, null, 2 ) );
+    // TODO: is this the best place for this? see https://github.com/phetsims/binder/issues/28
+    // write data to a file so that we don't have to run this so often for quick iteration.
+    fs.writeFileSync( `${__dirname}/../binderjson.json`, JSON.stringify( outputObject, null, 2 ) );
 
-  // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level. see https://github.com/phetsims/binder/issues/28
-  return outputObject;
+    // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level. see https://github.com/phetsims/binder/issues/28
+    return outputObject;
+  } );
 };

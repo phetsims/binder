@@ -17,7 +17,7 @@
     "grunt": "~1.4.0",
     "handlebars": "^4.0.11",
     "marked": "0.3.19",
-    "puppeteer": "~2.1.1"
+    "puppeteer": "^10.1.0"
   },
   "phet": {},
   "eslintConfig": {
