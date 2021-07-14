@@ -138,7 +138,7 @@ module.exports = async commandLineSims => {
       await page.close();
     }
 
-    browser.close();
+    await browser.close();
 
     const outputObject = {
       components: dataByComponent,
