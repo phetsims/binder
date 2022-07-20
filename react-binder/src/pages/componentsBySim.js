@@ -9,7 +9,7 @@
 // imports
 import React from 'react';
 import './common.css';
-import Panel from "./panel";
+import Panel from './panel';
 
 export default class ComponentsBySim extends React.Component {
   constructor( props ) {

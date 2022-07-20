@@ -8,8 +8,8 @@
 
 // imports
 import React from 'react';
-import Panel from './panel';
 import './common.css';
+import Panel from './panel';
 
 export default class SimsByComponent extends React.Component {
   constructor( props ) {
