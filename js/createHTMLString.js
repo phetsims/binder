@@ -10,7 +10,7 @@
 const fs = require( 'fs' );
 const handlebars = require( 'handlebars' );
 const marked = require( 'marked' );
-const matter = require( 'gray-matter' ); // eslint-disable-line
+const matter = require( 'gray-matter' ); // eslint-disable-line require-statement-match
 const path = require( 'path' );
 
 // const apiUrl = '';

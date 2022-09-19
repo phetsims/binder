@@ -9,7 +9,7 @@
 
 const createHTMLString = require( './createHTMLString' );
 const fs = require( 'fs' );
-const fsExtra = require( 'fs-extra' ); // eslint-disable-line
+const fsExtra = require( 'fs-extra' ); // eslint-disable-line require-statement-match
 const getFromSimInMaster = require( './getFromSimInMaster' );
 
 // resolve image and doc paths as constants
