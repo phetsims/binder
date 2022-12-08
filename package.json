@@ -13,9 +13,9 @@
   },
   "devDependencies": {
     "fs-extra": "6.0.1",
-    "gray-matter": "^4.0.1",
+    "gray-matter": "~4.0.1",
     "grunt": "~1.5.3",
-    "handlebars": "^4.0.11",
+    "handlebars": "~4.0.11",
     "marked": "0.3.19",
     "puppeteer": "~19.2.2"
   },
@@ -34,7 +34,7 @@
     },
     "settings": {
       "react": {
-        "version": "^16.8.6"
+        "version": "~16.8.6"
       }
     }
   }
