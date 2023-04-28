@@ -19,7 +19,7 @@
 
 
 // modules
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
