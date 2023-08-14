@@ -1,7 +1,7 @@
 // Copyright 2018-2023, University of Colorado Boulder
 
 /**
- * Runs all sims to get runtime information. Return the data object based on the sims run in master.
+ * Runs all sims to get runtime information. Return the data object based on the sims run in main.
  *
  * Currently the data structure returned is an object where keys are the sims, and the value is an object where the
  * key is the component name i.e. `{{repoName}}/{{componentName}}, and the value is a list of dataURL images.

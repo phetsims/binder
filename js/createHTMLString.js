@@ -143,7 +143,7 @@ const createHTMLString = function( data ) {
 // handlebars helper functions
 handlebars.registerHelper( 'componentLink', ( repo, component ) => {
   return new handlebars.SafeString(
-    `<a href="https://github.com/phetsims/${repo}/blob/master/js/${component}.js">Source Code and Options</a>`
+    `<a href="https://github.com/phetsims/${repo}/blob/main/js/${component}.js">Source Code and Options</a>`
   );
 } );
 

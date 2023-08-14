@@ -27,6 +27,6 @@ For more information see https://github.com/phetsims/binder/ or contact @zepumph
 
 ## output
 
-`/docs` from master is hosted at  https://phetsims.github.io/binder/. So checking in the build file will update the 
+`/docs` from main is hosted at  https://phetsims.github.io/binder/. So checking in the build file will update the 
 endpoint for all to see changes immediately. `docs/` is against phet convention of having a `doc/` folder, but github 
-requires the folder named as such to support hosting files from master. 
+requires the folder named as such to support hosting files from main. 
