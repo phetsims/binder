@@ -10,7 +10,7 @@
 const createHTMLString = require( './createHTMLString' );
 const fs = require( 'fs' );
 const fsExtra = require( 'fs-extra' ); // eslint-disable-line require-statement-match
-const getFromSimInMaster = require( './getFromSimInMaster' );
+const getFromSimInMain = require( './getFromSimInMain' );
 
 // resolve image and doc paths as constants
 
@@ -38,7 +38,7 @@ catch( err ) {
 ( async () => {
 
   // Run all sims, get a list of pictures for a sim for a component.
-  const componentDataBySim = await getFromSimInMaster( commandLineSims );
+  const componentDataBySim = await getFromSimInMain( commandLineSims );
 
   const HTML = createHTMLString( componentDataBySim );
 

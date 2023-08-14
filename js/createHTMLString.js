@@ -60,7 +60,7 @@ function getHandlebarsTemplate( filename ) {
 /**
  * The data object has levels like sims=>components=>dataURLs
  * So each simKey is another object
- * @param {Object} data - see `getFromSimInMaster` for more details.
+ * @param {Object} data - see `getFromSimInMain` for more details.
  * @returns {string} - the HTML
  */
 const createHTMLString = function( data ) {
@@ -166,7 +166,7 @@ handlebars.registerHelper( 'navList', ( components, repo ) => {
 
 module.exports = createHTMLString;
 
-// Shortcut to use stored JSON for quick iteration. See getFromSimInMaster for writing of this data file.
+// Shortcut to use stored JSON for quick iteration. See getFromSimInMain for writing of this data file.
 const myArgs = process.argv.slice( 2 );
 if ( myArgs[ 0 ] && myArgs[ 0 ] === 'json' ) {
   const inputFile = myArgs[ 1 ];
