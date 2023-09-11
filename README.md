@@ -1,8 +1,7 @@
 # binder
 
 See [https://phetsims.github.io/binder/](https://phetsims.github.io/binder/) for public up to date documentation and
-style guide on PhET sim
-components.
+style guide on PhET sim components.
 
 Generates and publishes documentation for PhET simulation components. Included components are registered to
 an `instanceRegistry` that's created as a result of a `binder` query parameter. It uses `puppeteer` to manage a Chromium
