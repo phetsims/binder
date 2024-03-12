@@ -109,7 +109,7 @@ module.exports = async commandLineSims => {
                   console.log( 'loaded', sim );
 
                   if ( phet.phetCore.InstanceRegistry ) {
-                    window.updateComponentData( sim, phet.phetCore.InstanceRegistry.map );
+                    window.updateComponentData( sim, phet.phetCore.InstanceRegistry.componentMap );
                     resolve();
                   }
                   else {
