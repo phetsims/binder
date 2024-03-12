@@ -34,6 +34,17 @@ For more information see https://github.com/phetsims/binder/ or contact @zepumph
 
 ## output
 
+This project is automatically run every night to regenerate the latest usages of PhET components, so just wait until 
+tomorrow to see any changes (or manually update using the above steps).
+
 `/docs` from main is hosted at  https://phetsims.github.io/binder/. So checking in the build file will update the
 endpoint for all to see changes immediately. `docs/` is against phet convention of having a `doc/` folder, but github
 requires the folder named as such to support hosting files from main. 
+
+## Adding components
+
+To add a new component here is a list of steps to take:
+1. Create a markdown file in the desired common code repo `doc/` directory, see sun/doc/ for example.
+2. Make sure to go to the parent category markdown file (likely just `sun/doc/OtherUI.md`) and add your component to that list.
+3. To retrieve sim usages of this component. Go to the constructor of your class and add a registration line that looks like: https://github.com/phetsims/sun/blob/11823335e60202b42e07e912b73635da5b0da677/js/Slider.ts#L517-L518 
+4. Binder is auto generated each night, so nothing more is needed to move your changes to production.
