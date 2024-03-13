@@ -71,12 +71,6 @@ const createHTMLString = function( data ) {
   const simsByComponent = Object.keys( components ).map( component => {
     return { name: component, sims: Object.keys( components[ component ] ) };
   } );
-
-  const baseTemplate = getHandlebarsTemplate( 'base.html' );
-  const parentComponentTemplate = getHandlebarsTemplate( 'parentComponent.html' );
-  const singleComponentTemplate = getHandlebarsTemplate( 'singleComponent.html' );
-  const componentsBySimulationTemplate = getHandlebarsTemplate( 'componentsBySimulation.html' );
-  const simsByComponentTemplate = getHandlebarsTemplate( 'simsByComponent.html' );
   let contentHTML = '';
 
   // get list of files in all docs/ directories, excluding binder (can be async)
@@ -89,13 +83,42 @@ const createHTMLString = function( data ) {
     mdData[ name ] = processFile( docPath );
   }
 
+// handlebars helper functions
+  handlebars.registerHelper( 'componentLink', ( repo, component ) => {
+    return new handlebars.SafeString(
+      `<a href="https://github.com/phetsims/${repo}/blob/main/js/${component}.ts">Source Code and Options</a>`
+    );
+  } );
+
+  handlebars.registerHelper( 'simPageLink', simName => {
+    return new handlebars.SafeString(
+      `<a href="https://phet.colorado.edu/en/simulation/${simName}" target="_blank">PhET Simulation Page</a>`
+    );
+  } );
+
+  handlebars.registerHelper( 'navList', ( components, parentRepo ) => {
+    let itemsHTML = components.map( c => {
+      const repo = mdData[ c ]?.repo || parentRepo;
+      return `<li><a href="#${repo}-${c}">${c}</a></li>`;
+    } ).join( '\n' );
+    return `<ul class="nav bd-sidenav">${itemsHTML}</ul>`;
+  } );
+
   const parentComponents = Object.values( mdData ).filter( component => component.data.parent );
+
+  const baseTemplate = getHandlebarsTemplate( 'base.html' );
+  const parentComponentTemplate = getHandlebarsTemplate( 'parentComponent.html' );
+  const singleComponentTemplate = getHandlebarsTemplate( 'singleComponent.html' );
+  const componentsBySimulationTemplate = getHandlebarsTemplate( 'componentsBySimulation.html' );
+  const simsByComponentTemplate = getHandlebarsTemplate( 'simsByComponent.html' );
+
   // loop over each parent component
   for ( const parent of parentComponents ) {
     let componentsHTML = '';
 
     for ( const component of parent.data.components ) {
-      const repoComponent = `${parent.repo}/${component}`;
+      const repo = mdData[ component ]?.repo || parent.repo;
+      const repoComponent = `${repo}/${component}`;
       const simObject = components[ repoComponent ];
       const simCount = simObject ? Object.keys( simObject ).length : 0;
       const sims = simObject ?
@@ -113,7 +136,7 @@ const createHTMLString = function( data ) {
         sims: sims,
         simCount: simCount,
         markdown: markdown,
-        repo: parent.repo
+        repo: repo
       };
 
       componentsHTML += singleComponentTemplate( componentContext );
@@ -139,25 +162,6 @@ const createHTMLString = function( data ) {
     } )
   } );
 };
-
-// handlebars helper functions
-handlebars.registerHelper( 'componentLink', ( repo, component ) => {
-  return new handlebars.SafeString(
-    `<a href="https://github.com/phetsims/${repo}/blob/main/js/${component}.js">Source Code and Options</a>`
-  );
-} );
-
-handlebars.registerHelper( 'simPageLink', simName => {
-  return new handlebars.SafeString(
-    `<a href="https://phet.colorado.edu/en/simulation/${simName}" target="_blank">PhET Simulation Page</a>`
-  );
-} );
-
-handlebars.registerHelper( 'navList', ( components, repo ) => {
-  let itemsHTML = components.map( c => `<li><a href="#${repo}-${c}">${c}</a></li>` ).join( '\n' );
-  itemsHTML += '<li><a href="#sims">Sorted By Simulation</a></li>';
-  return `<ul class="nav bd-sidenav">${itemsHTML}</ul>`;
-} );
 
 /**
  * @param data sim => componentName => [dataURLs]
