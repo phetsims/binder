@@ -13,6 +13,9 @@
       article.parent-component {
         display: none;
       }
+      .component-data {
+        margin-top: 5px;
+      }
 
       .bd-sidebar {
           top: .1em;
@@ -84,7 +87,7 @@
 
       function scrollToComponent( element ) {
         let $offset = $(element.hash).offset().top;
-        $( 'html' ).scrollTop( $offset - 5 );
+        $( 'html' ).scrollTop( $offset + 5 );
       }
 
       function updateUrl ( elem ) {
@@ -109,7 +112,7 @@
         e.preventDefault();
         const hash = this.hash;
         $( 'html, body' ).animate( {
-          scrollTop: $(hash).offset().top
+          scrollTop: $(hash).offset().top + 5
         }, 300, function() {
           window.location.hash = hash;
         } );
