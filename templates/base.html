@@ -136,6 +136,10 @@
       } );
 
       document.getElementById( 'content-fill' ).innerHTML = document.querySelector( '.parent-component' ).innerHTML;
+
+      const hash = window.location.hash;
+      window.location.hash = '';
+      window.location.hash = hash;
     </script>
 </body>
 </html>
