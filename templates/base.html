@@ -14,6 +14,10 @@
         display: none;
       }
 
+      .bd-sidenav {
+          top: 1em;
+      }
+
       .bd-sidenav li {
         padding-left: 10px;
       }
@@ -27,12 +31,10 @@
 <body>
     <!-- Simulate look and feel of Bootstrap docs -->
     <!-- Faded permanent menu at top left -->
-    <div id="header" class="d-flex flex-column flex-md-row align-itmes-center p-3 px-md-4 bg-dark border-bottom bd-navbar">
-      <h2 class="text-light">PhET Style Guide</h2>
-    </div>
     <div class="container-fluid">
         <div class="row flex-xl-nowrap">
             <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+              <h3 class="text-dark">PhET Style Guide</h3>
                 <!-- navigation -->
                 <nav class="collapse bd-links">
                 {{#each parents as |parent|}}
@@ -78,7 +80,7 @@
 
       function scrollToComponent( element ) {
         let $offset = $(element.hash).offset().top;
-        $( 'html' ).scrollTop( $offset - $('#header').outerHeight() + 5 );
+        $( 'html' ).scrollTop( $offset - 5 );
       }
 
       function updateUrl ( elem ) {
