@@ -14,12 +14,16 @@
         display: none;
       }
 
-      .bd-sidenav {
-          top: 1em;
+      .bd-sidebar {
+          top: .1em;
       }
 
       .bd-sidenav li {
         padding-left: 10px;
+      }
+
+      .logo{
+        width: 100%;
       }
 
       .list-group-item {
@@ -34,7 +38,7 @@
     <div class="container-fluid">
         <div class="row flex-xl-nowrap">
             <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
-              <h3 class="text-dark">PhET Style Guide</h3>
+              <h3 class="text-dark"><img class="logo" src="./images/logo.png"><br> Style Guide</h3>
                 <!-- navigation -->
                 <nav class="collapse bd-links">
                 {{#each parents as |parent|}}
