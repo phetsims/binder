@@ -97,7 +97,7 @@ const createHTMLString = function( data ) {
   } );
 
   handlebars.registerHelper( 'navList', ( components, parentRepo ) => {
-    let itemsHTML = components.map( c => {
+    const itemsHTML = components.map( c => {
       const repo = mdData[ c ]?.repo || parentRepo;
       return `<li><a href="#${repo}-${c}">${c}</a></li>`;
     } ).join( '\n' );
