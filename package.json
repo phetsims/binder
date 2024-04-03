@@ -36,6 +36,14 @@
       "react": {
         "version": "~16.8.6"
       }
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "./js/**"
+        ],
+        "extends": "../chipper/eslint/node_eslintrc.js"
+      }
+    ]
   }
 }
