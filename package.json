@@ -44,6 +44,9 @@
         ],
         "extends": "../chipper/eslint/node_eslintrc.js"
       }
+    ],
+    "ignorePatterns": [
+      "docs/"
     ]
   }
 }
