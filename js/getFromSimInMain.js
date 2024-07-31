@@ -39,6 +39,7 @@ module.exports = async commandLineSims => {
 
     const dataByComponent = {};
     const dataBySim = {};
+    const hotkeysBySim = {};
 
     // override to generate based on only sims provided
     const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
@@ -48,13 +49,16 @@ module.exports = async commandLineSims => {
 
       const page = await browser.newPage();
 
-      await page.exposeFunction( 'updateComponentData', ( simName, dataMap ) => {
+      await page.exposeFunction( 'updateComponentData', ( simName, dataMap, hotkeys ) => {
         assert( !dataBySim[ sim ], 'sim already exists?' );
 
         dataBySim[ sim ] = {};
         const simObject = dataBySim[ sim ];
         simObject.name = sim;
         simObject.components = [];
+
+        assert( !hotkeysBySim[ sim ], 'sim already exists?' );
+        hotkeysBySim[ sim ] = hotkeys;
 
         for ( const component in dataMap ) {
           if ( dataMap.hasOwnProperty( component ) ) {
@@ -109,7 +113,7 @@ module.exports = async commandLineSims => {
                   console.log( 'loaded', sim );
 
                   if ( phet.phetCore.InstanceRegistry ) {
-                    window.updateComponentData( sim, phet.phetCore.InstanceRegistry.componentMap );
+                    window.updateComponentData( sim, phet.phetCore.InstanceRegistry.componentMap, phet.phetCore.InstanceRegistry.hotkeys );
                     resolve();
                   }
                   else {
@@ -142,7 +146,8 @@ module.exports = async commandLineSims => {
 
     const outputObject = {
       components: dataByComponent,
-      sims: dataBySim
+      sims: dataBySim,
+      hotkeys: hotkeysBySim
     };
 
     // TODO: is this the best place for this? see https://github.com/phetsims/binder/issues/28

@@ -66,6 +66,7 @@ function getHandlebarsTemplate( filename ) {
 const createHTMLString = function( data ) {
   const components = data.components;
   const sims = data.sims;
+  const hotkeys = data.hotkeys;
 
   // organize the data for the "sims by component" view
   const simsByComponent = Object.keys( components ).map( component => {
@@ -82,6 +83,25 @@ const createHTMLString = function( data ) {
     const name = path.basename( docPath, '.md' );
     mdData[ name ] = processFile( docPath );
   }
+
+  // reduce the hotkeys data into a single collection with duplicates removed, instead of organized by sim
+  const uniqueHotkeys = new Map();
+
+  // this syntax skips the first element of the array, which is the sim name
+  for ( const [ , hotkeyList ] of Object.entries( hotkeys ) ) {
+    for ( const hotkey of hotkeyList ) {
+
+      // Create a unique key for each hotkey
+      const uniqueKey = `${hotkey.binderName}_${hotkey.keyStrings.join( '_' )}_${hotkey.repoName}`;
+
+      if ( !uniqueHotkeys.has( uniqueKey ) ) {
+        uniqueHotkeys.set( uniqueKey, {
+          ...hotkey
+        } );
+      }
+    }
+  }
+  const hotkeyArray = Array.from( uniqueHotkeys.values() );
 
 // handlebars helper functions
   handlebars.registerHelper( 'componentLink', ( repo, component ) => {
@@ -111,6 +131,7 @@ const createHTMLString = function( data ) {
   const singleComponentTemplate = getHandlebarsTemplate( 'singleComponent.html' );
   const componentsBySimulationTemplate = getHandlebarsTemplate( 'componentsBySimulation.html' );
   const simsByComponentTemplate = getHandlebarsTemplate( 'simsByComponent.html' );
+  const hotkeysTemplate = getHandlebarsTemplate( 'hotkeys.html' );
 
   // loop over each parent component
   for ( const parent of parentComponents ) {
@@ -153,6 +174,8 @@ const createHTMLString = function( data ) {
   contentHTML += componentsBySimulationTemplate( { sims: sims } );
 
   contentHTML += simsByComponentTemplate( { components: simsByComponent } );
+
+  contentHTML += hotkeysTemplate( { hotkeys: hotkeyArray } );
 
   return baseTemplate( {
     content: contentHTML, parents: parentComponents.map( p => {
