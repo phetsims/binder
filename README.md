@@ -54,7 +54,7 @@ To add a new component here is a list of steps to take:
 Binder also documents Hotkeys used in PhET simulations. Hotkeys are registered with scenery/HotkeyData, which also uses
 the InstanceRegistry. The puppeteer script (getFromSimInMain.js) grabs the HotkeyData as its loads each sim.
 
-See getFromSimInMain.js for the work that gets hotkey data by loading simulations.
-See templates/hotkeys.html for the template used to render the hotkeys and the the filtering functionality.
-See base.html for the link to the hotkeys page. The classes on the link are required for the page to work.
-See createHTMLString.js for the work that uses the hotkeys.html template and fills it in from hotkeys data.
+- See getFromSimInMain.js for the work that gets hotkey data by loading simulations.
+- See templates/hotkeys.html for the template used to render the hotkeys and the the filtering functionality.
+- See base.html for the link to the hotkeys page. The classes on the link are required for the page to work.
+- See createHTMLString.js for the work that uses the hotkeys.html template and fills it in from hotkeys data.
