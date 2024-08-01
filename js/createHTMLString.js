@@ -175,6 +175,10 @@ const createHTMLString = function( data ) {
 
   contentHTML += simsByComponentTemplate( { components: simsByComponent } );
 
+  // Sort hotkeys by repoName
+  hotkeyArray.sort( ( a, b ) => {
+    return a.repoName.localeCompare( b.repoName );
+  } );
   contentHTML += hotkeysTemplate( { hotkeys: hotkeyArray } );
 
   return baseTemplate( {
