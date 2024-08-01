@@ -86,7 +86,7 @@
     initializeEventListeners();
 
     // NOTE: This is a custom event listener that is triggered when the main content is re-rendered by
-    // Handlebars. Newly rendered elements require the event listeners.
+    // Handlebars. Newly rendered elements require new event listeners. See base.html for the event trigger.
     document.addEventListener( 'content-rerendered', initializeEventListeners );
 
   </script>

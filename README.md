@@ -48,3 +48,13 @@ To add a new component here is a list of steps to take:
 2. Make sure to go to the parent category markdown file (likely just `sun/doc/OtherUI.md`) and add your component to that list.
 3. To retrieve sim usages of this component. Go to the constructor of your class and add a registration line that looks like: https://github.com/phetsims/sun/blob/11823335e60202b42e07e912b73635da5b0da677/js/Slider.ts#L517-L518 
 4. Binder is auto generated each night, so nothing more is needed to move your changes to production.
+
+## Hotkeys
+
+Binder also documents Hotkeys used in PhET simulations. Hotkeys are registered with scenery/HotkeyData, which also uses
+the InstanceRegistry. The puppeteer script (getFromSimInMain.js) grabs the HotkeyData as its loads each sim.
+
+See getFromSimInMain.js for the work that gets hotkey data by loading simulations.
+See templates/hotkeys.html for the template used to render the hotkeys and the the filtering functionality.
+See base.html for the link to the hotkeys page. The classes on the link are required for the page to work.
+See createHTMLString.js for the work that uses the hotkeys.html template and fills it in from hotkeys data.

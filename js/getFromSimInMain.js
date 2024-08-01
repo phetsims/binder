@@ -6,6 +6,7 @@
  * Currently the data structure returned is an object where keys are the sims, and the value is an object where the
  * key is the component name i.e. `{{repoName}}/{{componentName}}, and the value is a list of dataURL images.
  *
+ * It also collects registered Hotkeys in every repository described by scenery/HotkeyData.
  *
  * This file relies heavily on phet-core's `InstanceRegistry.js` to communicate with sims during runtime. To get data
  * and pictures about a component in the sim, that component will need to be registered, see ComboBox.js as an example. . .
