@@ -50,7 +50,7 @@
         ],
         "parserOptions": {
           "project": [
-            "../binder/tsconfig.json"
+            "../chipper/tsconfig/eslint-all/tsconfig.json"
           ]
         }
       }
