@@ -19,44 +19,5 @@
     "marked": "~0.3.19",
     "puppeteer": "~19.2.2"
   },
-  "phet": {},
-  "eslintConfig": {
-    "extends": "plugin:react/recommended",
-    "parserOptions": {
-      "sourceType": "module",
-      "ecmaVersion": 2015,
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "env": {
-      "node": true
-    },
-    "settings": {
-      "react": {
-        "version": "~16.8.6"
-      }
-    },
-    "overrides": [
-      {
-        "files": [
-          "./js/**"
-        ],
-        "extends": "../chipper/eslint/node_eslintrc.js"
-      },
-      {
-        "files": [
-          "**/*.ts"
-        ],
-        "parserOptions": {
-          "project": [
-            "../chipper/tsconfig/eslint-all/tsconfig.json"
-          ]
-        }
-      }
-    ],
-    "ignorePatterns": [
-      "docs/"
-    ]
-  }
+  "phet": {}
 }
