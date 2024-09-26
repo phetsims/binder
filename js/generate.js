@@ -9,7 +9,7 @@
 
 const createHTMLString = require( './createHTMLString' );
 const fs = require( 'fs' );
-const fsExtra = require( 'fs-extra' ); // eslint-disable-line require-statement-match
+const fsExtra = require( 'fs-extra' ); // eslint-disable-line phet/require-statement-match
 const getFromSimInMain = require( './getFromSimInMain' );
 
 // resolve image and doc paths as constants
