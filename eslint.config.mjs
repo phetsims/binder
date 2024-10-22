@@ -7,8 +7,8 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import nodeEslintConfig from '../chipper/eslint/node.eslint.config.mjs';
-import globals from '../chipper/node_modules/globals/index.js';
+import nodeEslintConfig from '../perennial-alias/js/eslint/node.eslint.config.mjs';
+import globals from '../perennial-alias/node_modules/globals/index.js';
 
 export default [
   ...nodeEslintConfig,
