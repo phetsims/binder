@@ -10,7 +10,7 @@
 const fs = require( 'fs' );
 const handlebars = require( 'handlebars' );
 const marked = require( 'marked' );
-const matter = require( 'gray-matter' ); // eslint-disable-line phet/require-statement-match
+const grayMatter = require( 'gray-matter' );
 const path = require( 'path' );
 
 // const apiUrl = '';
@@ -20,7 +20,7 @@ const simsDirectory = path.normalize( `${__dirname}/../..` );
 function processFile( filePath ) {
 
   // get the front matter object
-  const mdObject = matter.read( filePath );
+  const mdObject = grayMatter.read( filePath );
   const pathArray = filePath.split( path.sep );
   const docIdx = pathArray.indexOf( 'doc' );
   const repo = pathArray[ docIdx - 1 ];
