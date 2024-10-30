@@ -18,6 +18,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
+/* global window phet */
 
 // modules
 const _ = require( 'lodash' );
