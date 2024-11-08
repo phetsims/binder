@@ -6,7 +6,7 @@
  */
 
 
-// const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML' );
+// const getMarkdownFileAsHTML = require( './getMarkdownFileAsHTML.js' );
 const fs = require( 'fs' );
 const handlebars = require( 'handlebars' );
 const marked = require( 'marked' );

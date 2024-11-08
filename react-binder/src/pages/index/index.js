@@ -8,8 +8,8 @@
 
 // imports
 import React from 'react';
-import ComponentsBySim from '../componentsBySim';
-import SimsByComponent from '../simsByComponent';
+import ComponentsBySim from '../componentsBySim.js';
+import SimsByComponent from '../simsByComponent.js';
 import './index.css';
 
 export default class IndexPage extends React.Component {

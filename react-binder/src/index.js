@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import IndexPage from './pages/index/index';
+import IndexPage from './pages/index/index.js';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<IndexPage />, document.getElementById('root'));
