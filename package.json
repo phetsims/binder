@@ -7,8 +7,8 @@
     "url": "https://github.com/phetsims/binder.git"
   },
   "scripts": {
-    "build": "node js/generate.js",
-    "build-html": "node js/createHTMLString.js json ./binderjson.json > ./docs/index.html"
+    "build": "bash ../perennial/bin/sage run js/generate.js",
+    "build-html": "bash ../perennial/bin/sage run js/createHTMLString.js json ./binderjson.json > ./docs/index.html"
   },
   "devDependencies": {
     "fs-extra": "~6.0.1",
