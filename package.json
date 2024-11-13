@@ -8,8 +8,7 @@
   },
   "scripts": {
     "build": "node js/generate.js",
-    "build-html": "node js/createHTMLString.js json ./binderjson.json > ./docs/index.html",
-    "test-local-server": "node js/serverTest.js"
+    "build-html": "node js/createHTMLString.js json ./binderjson.json > ./docs/index.html"
   },
   "devDependencies": {
     "fs-extra": "~6.0.1",
