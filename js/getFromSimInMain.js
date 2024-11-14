@@ -25,7 +25,7 @@ const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
-const withServer = require( '../../perennial/js/common/withServer.js' );
+const withServer = require( '../../perennial/js/common/withServer' );
 
 // Helper function to get the sim list from perennial
 const getSims = function() {
