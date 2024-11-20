@@ -7,10 +7,10 @@
  */
 
 
-const createHTMLString = require( './createHTMLString' );
+const createHTMLString = require( './createHTMLString.js' );
 const fs = require( 'fs' );
 const fsExtra = require( 'fs-extra' );
-const getFromSimInMain = require( './getFromSimInMain' );
+const getFromSimInMain = require( './getFromSimInMain.js' );
 
 // resolve image and doc paths as constants
 
