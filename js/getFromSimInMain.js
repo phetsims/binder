@@ -27,6 +27,8 @@ const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
 const withServer = require( '../../perennial/js/common/withServer' );
 
+const DEBUG = false;
+
 // Helper function to get the sim list from perennial
 const getSims = function() {
   return fs.readFileSync( `${__dirname}/../../perennial/data/active-sims` ).toString().trim().split( '\n' ).map( sim => sim.trim() );
@@ -86,12 +88,12 @@ module.exports = async commandLineSims => {
           console.error( `${sim} PAGE ERROR:`, msg.text() );
         }
         else {
-          console.log( `${sim} PAGE LOG:`, msg.text() );
+          DEBUG && console.log( `${sim} PAGE LOG:`, msg.text() );
         }
       } );
 
       page.on( 'error', error => {
-        console.error( 'PAGE ERROR:', error );
+        console.error( 'PUPPETEER ERROR:', error );
       } );
       page.on( 'pageerror', error => {
         console.error( 'PAGE ERROR:', error );
@@ -136,7 +138,7 @@ module.exports = async commandLineSims => {
           } );
 
           setTimeout( () => {
-            console.log( 'sim load timeout, moving on' );
+            console.error( `load timeout for ${sim}, moving on` );
             resolve( undefined );
           }, 20000 );
         } );
