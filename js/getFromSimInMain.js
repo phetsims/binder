@@ -53,6 +53,9 @@ module.exports = async commandLineSims => {
 
       const page = await browser.newPage();
 
+      // await forever here for debugging
+      console.log( port );
+
       await page.exposeFunction( 'updateComponentData', ( simName, dataMap, hotkeys ) => {
         assert( !dataBySim[ sim ], 'sim already exists?' );
 
@@ -102,6 +105,7 @@ module.exports = async commandLineSims => {
       // navigate to the sim page
       const url = `${baseURL}${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
       console.log( `\nloading: ${sim}` );
+      console.log( url );
       await page.goto( url );
 
       // Add a listener such that when the sim posts a message saying that it has loaded,
