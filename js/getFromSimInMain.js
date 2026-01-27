@@ -25,7 +25,7 @@ const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
-const withServer = require( '../../perennial/js/common/withServer' );
+const withServer = require( '../../perennial/js/common/withServer' ).default;
 
 const DEBUG = false;
 
