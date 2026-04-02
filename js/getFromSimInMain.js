@@ -97,7 +97,10 @@ module.exports = async ( commandLineSims, totalityPath ) => {
   try {
 
     const baseURL = `http://localhost:${DEV_SERVER_PORT}/`;
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch( {
+      headless: true,
+      args: [ '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage' ]
+    } );
 
     const dataByComponent = {};
     const dataBySim = {};
