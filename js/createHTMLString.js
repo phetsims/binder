@@ -13,8 +13,8 @@ const marked = require( 'marked' );
 const grayMatter = require( 'gray-matter' );
 const path = require( 'path' );
 
-// const apiUrl = '';
-const simsDirectory = path.normalize( `${__dirname}/../..` );
+// simsDirectory points to the totality checkout where repos live. Set by createHTMLString's totalityPath parameter.
+let simsDirectory = path.normalize( path.join( __dirname, '..', '..', 'totality' ) );
 
 // returns an object with the 'data' and 'content' keys
 function processFile( filePath ) {
@@ -63,7 +63,10 @@ function getHandlebarsTemplate( filename ) {
  * @param {Object} data - see `getFromSimInMain` for more details.
  * @returns {string} - the HTML
  */
-const createHTMLString = function( data ) {
+const createHTMLString = function( data, totalityPath ) {
+  if ( totalityPath ) {
+    simsDirectory = path.normalize( totalityPath );
+  }
   const components = data.components;
   const sims = data.sims;
   const hotkeys = data.hotkeys;
@@ -198,9 +201,11 @@ const createHTMLString = function( data ) {
 module.exports = createHTMLString;
 
 // Shortcut to use stored JSON for quick iteration. See getFromSimInMain for writing of this data file.
+// Usage: node js/createHTMLString.js json ./binderjson.json [TOTALITY_PATH]
 const myArgs = process.argv.slice( 2 );
 if ( myArgs[ 0 ] && myArgs[ 0 ] === 'json' ) {
   const inputFile = myArgs[ 1 ];
-  const report = createHTMLString( JSON.parse( fs.readFileSync( inputFile ) ) );
+  const cliTotalityPath = myArgs[ 2 ] || process.env.TOTALITY_PATH;
+  const report = createHTMLString( JSON.parse( fs.readFileSync( inputFile ) ), cliTotalityPath );
   console.log( report );
 }

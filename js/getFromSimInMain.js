@@ -9,10 +9,13 @@
  * It also collects registered Hotkeys in every repository described by scenery/HotkeyData.
  *
  * This file relies heavily on phet-core's `InstanceRegistry.js` to communicate with sims during runtime. To get data
- * and pictures about a component in the sim, that component will need to be registered, see ComboBox.js as an example. . .
+ * and pictures about a component in the sim, that component will need to be registered, see ComboBox.js as an example.
  * Something like: `
  * // support for binder documentation, stripped out in builds and only runs when ?binder is specified
  * assert && phet.chipper.queryParameters.binder && InstanceRegistry.registerDataURL( 'sun', 'ComboBox', this );
+ *
+ * Modernized to run sims via chipper's dev-server from a totality monorepo checkout, specified by the TOTALITY_PATH
+ * environment variable. The dev-server handles on-the-fly esbuild transpilation/bundling.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -21,24 +24,79 @@
 /* global window phet */
 
 // modules
+const { spawn } = require( 'child_process' );
+const http = require( 'http' );
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const fs = require( 'fs' );
+const path = require( 'path' );
 const puppeteer = require( 'puppeteer' );
-const withServer = require( '../../perennial/js/common/withServer' ).default;
 
 const DEBUG = false;
+const DEV_SERVER_PORT = 48126;
 
-// Helper function to get the sim list from perennial
-const getSims = function() {
-  return fs.readFileSync( `${__dirname}/../../perennial/data/active-sims` ).toString().trim().split( '\n' ).map( sim => sim.trim() );
+// Helper function to get the sim list from totality's perennial-alias
+const getSims = function( totalityPath ) {
+  return fs.readFileSync( path.join( totalityPath, 'perennial-alias/data/active-sims' ) )
+    .toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
 
-module.exports = async commandLineSims => {
+/**
+ * Start chipper's dev-server from the totality checkout. Returns a promise that resolves with the child process
+ * once the server is listening.
+ */
+function startDevServer( totalityPath ) {
+  const chipperDir = path.join( totalityPath, 'chipper' );
 
-  return withServer( async port => {
+  console.log( `Starting chipper dev-server from ${chipperDir} on port ${DEV_SERVER_PORT}...` );
 
-    const baseURL = `http://localhost:${port}/`;
+  const server = spawn( 'npx', [ 'grunt', 'dev-server', `--port=${DEV_SERVER_PORT}` ], {
+    cwd: chipperDir,
+    stdio: [ 'ignore', 'pipe', 'pipe' ]
+  } );
+
+  if ( DEBUG ) {
+    server.stdout.on( 'data', data => console.log( `[dev-server stdout] ${data.toString().trim()}` ) );
+    server.stderr.on( 'data', data => console.log( `[dev-server stderr] ${data.toString().trim()}` ) );
+  }
+
+  server.on( 'error', err => {
+    console.error( `Failed to start dev-server: ${err.message}` );
+  } );
+
+  // Poll until the server responds to HTTP requests
+  return new Promise( ( resolve, reject ) => {
+    let attempts = 0;
+    const maxAttempts = 60; // 30 seconds max
+
+    const poll = () => {
+      attempts++;
+      const req = http.get( `http://localhost:${DEV_SERVER_PORT}/`, res => {
+        console.log( `Dev-server ready at http://localhost:${DEV_SERVER_PORT}/ (after ${attempts * 500}ms)` );
+        res.resume(); // drain the response
+        resolve( server );
+      } );
+      req.on( 'error', () => {
+        if ( attempts >= maxAttempts ) {
+          reject( new Error( 'Dev-server failed to start within 30 seconds' ) );
+        }
+        else {
+          setTimeout( poll, 500 );
+        }
+      } );
+      req.end();
+    };
+    setTimeout( poll, 500 );
+  } );
+}
+
+module.exports = async ( commandLineSims, totalityPath ) => {
+
+  const devServer = await startDevServer( totalityPath );
+
+  try {
+
+    const baseURL = `http://localhost:${DEV_SERVER_PORT}/`;
     const browser = await puppeteer.launch();
 
     const dataByComponent = {};
@@ -46,15 +104,12 @@ module.exports = async commandLineSims => {
     const hotkeysBySim = {};
 
     // override to generate based on only sims provided
-    const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims();
+    const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims( totalityPath );
     console.log( 'sims to load:', sims.join( ', ' ) );
 
     for ( const sim of sims ) {
 
       const page = await browser.newPage();
-
-      // await forever here for debugging
-      console.log( port );
 
       await page.exposeFunction( 'updateComponentData', ( simName, dataMap, hotkeys ) => {
         assert( !dataBySim[ sim ], 'sim already exists?' );
@@ -70,13 +125,11 @@ module.exports = async commandLineSims => {
         for ( const component in dataMap ) {
           if ( dataMap.hasOwnProperty( component ) ) {
 
-
             if ( !dataByComponent[ component ] ) {
               dataByComponent[ component ] = {};
             }
 
             dataByComponent[ component ][ simName ] = dataMap[ component ];
-
 
             // fill in simulation based data
             simObject.components.push( component );
@@ -158,11 +211,13 @@ module.exports = async commandLineSims => {
       hotkeys: hotkeysBySim
     };
 
-    // TODO: is this the best place for this? see https://github.com/phetsims/binder/issues/28
-    // write data to a file so that we don't have to run this so often for quick iteration.
+    // Write data to a file so that we don't have to run this so often for quick iteration.
     fs.writeFileSync( `${__dirname}/../binderjson.json`, JSON.stringify( outputObject, null, 2 ) );
 
-    // TODO: is it weird to return an object that is by sim THEN by component. createHTML should probably take a data struture based on component at the top level. see https://github.com/phetsims/binder/issues/28
     return outputObject;
-  } );
+  }
+  finally {
+    devServer.kill();
+    console.log( 'Dev-server stopped.' );
+  }
 };
