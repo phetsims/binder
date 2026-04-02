@@ -30,7 +30,7 @@ const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const fs = require( 'fs' );
 const path = require( 'path' );
-const puppeteer = require( 'puppeteer' );
+const { chromium } = require( 'playwright' );
 
 const DEBUG = false;
 const DEV_SERVER_PORT = 48126;
@@ -97,10 +97,7 @@ module.exports = async ( commandLineSims, totalityPath ) => {
   try {
 
     const baseURL = `http://localhost:${DEV_SERVER_PORT}/`;
-    const browser = await puppeteer.launch( {
-      headless: true,
-      args: [ '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage' ]
-    } );
+    const browser = await chromium.launch();
 
     const dataByComponent = {};
     const dataBySim = {};
@@ -151,11 +148,11 @@ module.exports = async ( commandLineSims, totalityPath ) => {
         }
       } );
 
-      page.on( 'error', error => {
-        console.error( 'PUPPETEER ERROR:', error );
+      page.on( 'crash', () => {
+        console.error( `${sim} PAGE CRASH` );
       } );
       page.on( 'pageerror', error => {
-        console.error( 'PAGE ERROR:', error );
+        console.error( `${sim} PAGE ERROR:`, error.message );
       } );
 
       // navigate to the sim page
