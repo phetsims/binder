@@ -12,6 +12,7 @@ const handlebars = require( 'handlebars' );
 const marked = require( 'marked' );
 const grayMatter = require( 'gray-matter' );
 const path = require( 'path' );
+const getRepoLocations = require( './getRepoLocations' );
 
 // simsDirectory points to the totality checkout where repos live. Set by createHTMLString's totalityPath parameter.
 let simsDirectory = path.normalize( path.join( __dirname, '..', '..', 'totality' ) );
@@ -31,8 +32,8 @@ function processFile( filePath ) {
 
 // responsible for returning a list of all filepaths for files within a `doc` directory for a given sim repo
 function getFullDocPaths( repo ) {
-  const docDir = path.join( simsDirectory, repo, 'doc' );
-  return getFilePathsFromDir( docDir, [] );
+  const repoLocation = getRepoLocations( simsDirectory )[ repo ];
+  return repoLocation ? getFilePathsFromDir( path.join( simsDirectory, repoLocation, 'doc' ), [] ) : [];
 }
 
 function getFilePathsFromDir( dir, filelist = [] ) {

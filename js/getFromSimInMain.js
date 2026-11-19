@@ -14,8 +14,9 @@
  * // support for binder documentation, stripped out in builds and only runs when ?binder is specified
  * assert && phet.chipper.queryParameters.binder && InstanceRegistry.registerDataURL( 'sun', 'ComboBox', this );
  *
- * Modernized to run sims via chipper's dev-server from a totality monorepo checkout, specified by the TOTALITY_PATH
- * environment variable. The dev-server handles on-the-fly esbuild transpilation/bundling.
+ * Runs sims via chipper's dev-server from a totality monorepo checkout, specified by the TOTALITY_PATH environment
+ * variable. The dev-server handles on-the-fly esbuild transpilation/bundling, and serves totality's projects/
+ * directory, so a sim's URL is its location below projects/.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -31,13 +32,14 @@ const assert = require( 'assert' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const { chromium } = require( 'playwright' );
+const getRepoLocations = require( './getRepoLocations' );
 
 const DEBUG = false;
 const DEV_SERVER_PORT = 48126;
 
 // Helper function to get the sim list from totality's perennial-alias
 const getSims = function( totalityPath ) {
-  return fs.readFileSync( path.join( totalityPath, 'perennial-alias/data/active-sims' ) )
+  return fs.readFileSync( path.join( totalityPath, getRepoLocations( totalityPath )[ 'perennial-alias' ], 'data/active-sims' ) )
     .toString().trim().split( '\n' ).map( sim => sim.trim() );
 };
 
@@ -46,12 +48,12 @@ const getSims = function( totalityPath ) {
  * once the server is listening.
  */
 function startDevServer( totalityPath ) {
-  const chipperDir = path.join( totalityPath, 'chipper' );
+  const simstackDir = path.join( totalityPath, 'projects/simstack' );
 
-  console.log( `Starting chipper dev-server from ${chipperDir} on port ${DEV_SERVER_PORT}...` );
+  console.log( `Starting chipper dev-server from ${simstackDir} on port ${DEV_SERVER_PORT}...` );
 
-  const server = spawn( 'npx', [ 'grunt', 'dev-server', `--port=${DEV_SERVER_PORT}` ], {
-    cwd: chipperDir,
+  const server = spawn( 'bash', [ 'bin/start', `--port=${DEV_SERVER_PORT}` ], {
+    cwd: simstackDir,
     stdio: [ 'ignore', 'pipe', 'pipe' ]
   } );
 
@@ -105,6 +107,7 @@ module.exports = async ( commandLineSims, totalityPath ) => {
 
     // override to generate based on only sims provided
     const sims = commandLineSims ? commandLineSims.split( ',' ) : getSims( totalityPath );
+    const repoLocations = getRepoLocations( totalityPath );
     console.log( 'sims to load:', sims.join( ', ' ) );
 
     for ( const sim of sims ) {
@@ -156,7 +159,7 @@ module.exports = async ( commandLineSims, totalityPath ) => {
       } );
 
       // navigate to the sim page
-      const url = `${baseURL}${sim}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
+      const url = `${baseURL}${repoLocations[ sim ].replace( 'projects/', '' )}/${sim}_en.html?brand=phet&ea&postMessageOnLoad&binder`;
       console.log( `\nloading: ${sim}` );
       console.log( url );
       await page.goto( url );

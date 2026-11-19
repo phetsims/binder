@@ -18,6 +18,7 @@ const fs = require( 'fs' );
 const fsExtra = require( 'fs-extra' );
 const path = require( 'path' );
 const getFromSimInMain = require( './getFromSimInMain' );
+const getRepoLocations = require( './getRepoLocations' );
 
 // constants
 const OUTPUT_FILE = path.join( __dirname, '..', 'docs', 'index.html' );
@@ -41,8 +42,9 @@ console.log( `Streaming to ${OUTPUT_FILE}` );
 try {
 
   // TODO: this assumes we only need images from two repos, see https://github.com/phetsims/binder/issues/28
-  fsExtra.copySync( path.join( totalityPath, 'sun/doc/images' ), path.join( __dirname, '..', 'docs/images/sun' ) );
-  fsExtra.copySync( path.join( totalityPath, 'scenery-phet/images' ), path.join( __dirname, '..', 'docs/images/scenery-phet' ) );
+  const repoLocations = getRepoLocations( totalityPath );
+  fsExtra.copySync( path.join( totalityPath, repoLocations.sun, 'doc/images' ), path.join( __dirname, '..', 'docs/images/sun' ) );
+  fsExtra.copySync( path.join( totalityPath, repoLocations[ 'scenery-phet' ], 'images' ), path.join( __dirname, '..', 'docs/images/scenery-phet' ) );
 }
 catch( err ) {
   console.error( err );
